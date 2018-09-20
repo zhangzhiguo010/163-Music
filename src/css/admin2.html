@@ -5,19 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>管理页面</title>
-    <link rel="stylesheet" href="./css/admin.css">
+    
 </head>
 <body>
-    <div class="container">
+    <div class="wrapper">
         <header></header>
-        <aside id="songList" class="songList"></aside>
-        <section id="saveSong" class="saveSong"></section>
-        <section id="uploadSong" class="uploadSong"></section>
+        <aside class="tabControl"></aside>
+        <section class="songList"></section>
+        <section class="songLyric"></section>
+        <section class="songEdit"></section>
+        <section class="songOthers"></section>
         <footer></footer>
     </div>
-    <script src="https://cdn.bootcss.com/jquery/3.3.0/jquery.min.js"></script>
 
-    
+
+    <script src="https://cdn.bootcss.com/jquery/3.3.0/jquery.min.js"></script>
     <script src="../node_modules/axios/dist/axios.min.js"></script>
     <script src="../node_modules/leancloud-storage/dist/av-min.js"></script>
     <script src="../node_modules/qiniu-js/dist/qiniu.min.js"></script>
