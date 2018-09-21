@@ -1,11 +1,9 @@
 {
     let view = {
-        el: '#songList',
+        el: '.songList',
         template:`
-            <div class="songList-inner">
-                <h3>歌曲列表</h3>
-                <ul class="song-list"></ul>
-            </div>
+            <h3>歌曲列表</h3>
+            <ul class="song-list"></ul>
         `,
         render(data){
             this.o_el = document.querySelector(this.el)
