@@ -4,30 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>管理页面</title>
+    <title>后台管理界面</title>
     <link rel="stylesheet" href="./css/admin.css">
 </head>
 <body>
-    <div class="container">
-        <header></header>
-        <aside id="songList" class="songList"></aside>
-        <section id="saveSong" class="saveSong"></section>
-        <section id="uploadSong" class="uploadSong"></section>
-        <footer></footer>
+    <div class="wrapper">
+        <header>
+            <div class="header-inner"></div>
+        </header>
+        <aside>
+            <div class="aside-inner"></div>
+        </aside>
+        <main>
+            <div class="main-inner">
+                <div class="songList">
+                    <div class="songList-inner"></div>
+                </div>
+                <div class="newAndEdit">
+                    <div class="newAndEdit-inner"></div>
+                </div>
+                <div class="uploadSong">
+                    <div class="uploadSong-inner"></div>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <div class="footer-inner"></div>
+        </footer>
     </div>
-    <script src="https://cdn.bootcss.com/jquery/3.3.0/jquery.min.js"></script>
 
-    
+
+
+    <script src="//at.alicdn.com/t/font_843654_w0sy0ik5le.js"></script>
     <script src="../node_modules/axios/dist/axios.min.js"></script>
     <script src="../node_modules/leancloud-storage/dist/av-min.js"></script>
     <script src="../node_modules/qiniu-js/dist/qiniu.min.js"></script>
-    <script src="//at.alicdn.com/t/font_843654_kp7z9wu8779.js"></script>
-    <script src="./js/initPlugin/init_leancloud.js"></script>
+    <script src="./js/admin/initPlugin/init_leancloud.js"></script>
+    
     <script src="./js/admin/eventHub.js"></script>
+    <script src="./js/admin/MVC/MVC.js"></script>
 
     <script src="./js/admin/header.js"></script>
-    <script src="./js/admin/song-list.js"></script>
-    <script src="./js/admin/save-song.js"></script>
-    <script src="./js/admin/upload-song.js"></script>
+    <script src="./js/admin/aside.js"></script>
+    <script src="./js/admin/songList.js"></script>
+    <script src="./js/admin/newAndEdit.js"></script>
+    <script src="./js/admin/uploadToQiNiu.js"></script>
 </body>
 </html>

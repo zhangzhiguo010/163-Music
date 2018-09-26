@@ -1,0 +1,146 @@
+/* *************** 样式初试化 ********************** */
+*{margin: 0; padding: 0;}
+*{box-sizing: border-box;}
+*::after, *::before{box-sizing: border-box;}
+ol, ul{list-style: none;}
+a{text-decoration: none; color: inherit;}
+h1, h2, h3, h4, h5, h6{font-weight: normal}
+.icon {width: 1em; height: 1em;vertical-align: -0.15em;fill: currentColor;overflow: hidden;}
+
+/* *************** 公共样式 ********************* */
+body{font: 3.7vw/1.5 Helvetica,sans-serif;}
+.sectionTitle{
+    position: relative;
+    padding-left: 2.4vw;
+    margin-bottom: 3.2vw;
+    font-size: 4.53vw;
+}
+.sectionTitle::after{
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 0.53vw;
+    height: 4.27vw;
+    background: #d33a31;
+}
+/* *************** index页面的头部 ********************* */
+.topBar{height: 17.07vw;position: relative;z-index: 100;}
+.topBar > .topBar_inner{position: fixed;top: 0;left: 0;width: 100%;height: 17.07vw;padding: 0 2.66vw;background: #d43c33;color: #fff;display: flex;justify-content: space-between;align-items: center;}
+.topBar > .topBar_inner > .tbr_svgLogo{width: 37.86vw;height: 6.67vw;background: #d43c33;}
+.topBar > .topBar_inner > .tbr_downloadApp{display: inline-block;padding: 0 2.66vw;line-height: 8vw;font-size: 4vw;position: relative;}
+.topBar > .topBar_inner > .tbr_downloadApp::after{content: '';position: absolute;top: 0;left: 0;width: 200%;height: 200%;border: 1px solid #e4e0e0;transform: scale(.5);transform-origin: top left;border-radius: 37.5%/100%;}
+
+/* *************** index页面的导航条 ********************* */
+.globalNav{height: 10.67vw;position: relative;z-index: 100;}
+.globalNav > .globalNav_inner{position: fixed;top: 0;left: 0;width: 100%;margin-top: 17.07vw;background: #fff;}
+.globalNav > .globalNav_inner::after{content: '';position: absolute;top: 0;left: 0;width: 200%;height: 200%;border-bottom: 1px solid #ccc;transform: scale(.5);transform-origin: top left;}
+.globalNav > .globalNav_inner > ol{display: flex;justify-content: space-around;align-items: center;}
+.globalNav > .globalNav_inner > ol > li{flex-basis: 33.35vw;text-align: center;}
+.globalNav > .globalNav_inner > ol > li > .glb_tab{position: relative;display: inline-block;height: 10.67vw;line-height: 10.67vw;padding: 0 1.33vw;font-size: 4vw;}
+.globalNav > .globalNav_inner > ol > li.active > .glb_tab{color: #d33a31;}
+.globalNav > .globalNav_inner > ol > li.active > .glb_tab::after{content: '';position: absolute;bottom: 0;left: 0;width: 100%;height: 3.5px;transform: scaleY(.5);background: #d33a31;}
+.globalNav > .globalNav_inner > ol > li > .glb_tab > span{vertical-align: middle;}
+
+
+/* *************** index页面的推荐歌单 ********************* */
+.remdSongs{padding: 4.5vw 0 5.6vw;}
+.remdSongs > ul{display: flex;flex-wrap: wrap;justify-content: space-between;}
+.remdSongs > ul > li{flex-basis: calc(33.33vw - 2px);margin-bottom: 4.27vw;}
+.remdSongs > ul > li > .remd_cover{}
+.remdSongs > ul > li > .remd_cover > .remd_imgWrapper{height: 32.77vw;position: relative;}
+.remdSongs > ul > li > .remd_cover > .remd_imgWrapper > img{width: 100%;height: 100%;}
+.remdSongs > ul > li > .remd_cover > .remd_imgWrapper > .remd_praise{position: absolute;top: 0.53vw;right: 1.33vw;z-index: 3;padding-left: 3.466vw;font-size: 3.2vw;color: #fff;}
+.remdSongs > ul > li > .remd_cover > .remd_imgWrapper > .remd_praise > .remd_erjiSvg{position: absolute;top: 50%;left: -2px;transform: translateY(-50%);width: 13px;height: 14px;}
+.remdSongs > ul > li > .remd_cover > .remd_text{display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;line-height: 1.2;overflow: hidden;padding: 6px 2px 0 6px;font-size: 13px;}
+
+
+/* *************** index页面的最新音乐 ********************* */
+.fshSongs{
+    /* border: 1px solid red; */
+    min-height: 20px;
+}
+.fshSongs > ul{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 2.66vw;
+}
+.fshSongs > ul > li{
+    width: 100%;
+}
+.fshSongs > ul > li > .fsh_song{
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    padding: 1.6vw 0;
+    color: #333;
+}
+.fshSongs > ul > li > .fsh_song::after{
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    transform: scaleY(.18);
+    background: #c0bebe;
+}
+.fshSongs > ul > li > .fsh_song > .fsh_SongName{
+    font-size: 4.53vw;
+}
+.fshSongs > ul > li > .fsh_song > .fsh_Singer{
+    font-size: 3.2vw;
+    color: #888;
+}
+.fshSongs > ul > li > .fsh_song > .fsh_Singer > .fsh_sq{
+    display: inline-block;
+    vertical-align: middle;
+    width: 13px;
+    height: 15px;
+    line-height: 15px;
+    fill: #ca5407;
+}
+.fshSongs > ul > li > .fsh_song > .fsh_SongPlay{
+    position: absolute;
+    top: 50%;
+    right: 2.66vw;
+    transform: translateY(-50%);
+    width: 5.86vw;
+    height: 5.86vw;
+    fill: #bfbfbf;
+}
+
+
+/* *************** index页面的art广告 ********************* */
+.art{
+    margin-bottom: 17px;
+    padding-top: 65px;
+    background: red;
+    background: url(/images/art_background.png) no-repeat 0 0 fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.art > .art_svgLogo{
+    width: 230px;
+    height: 47px;
+}
+.art > .art_openApp{
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 38px;
+    padding: 0 47px;
+    border: 1px solid #d33a31;
+    border-radius: 19px;
+    font-size: 16px;
+    color: #d33a31;
+    margin: 13px 0 5px;
+}
+.art > .art_copyright{
+    line-height: 16px;
+    font-size: 12px;
+    color: #888;
+    transform: scale(.75);
+}

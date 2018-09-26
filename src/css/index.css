@@ -1,0 +1,251 @@
+*{margin: 0; padding: 0;}
+*{box-sizing: border-box;}
+ul, ol{list-style: none;}
+a{text-decoration: none; color: inherit;}
+.icon {
+    width: 1em; height: 1em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+ }
+body{
+    font: 14px/1.5 Helvetica,sans-serif;
+    color: #333;
+}
+
+div.wrapper{
+    width: 100%;
+}
+
+/* ************** header头部样式 ******************** */
+header{
+    height: 64px;
+}
+header > .topHeader{
+    width: 100%;
+    height: 64px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #d43c33;
+    padding: 0 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #f4ffff;
+}
+.topHeader > .logo{
+    width: 142px;
+    height: 25px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+}
+.topHeader > .logo > span{
+    margin-left: 6px;
+    font-size: 18px;
+    font-weight: normal;
+}
+.topHeader > .logo > svg{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 142px;
+    height: 25px;
+    fill: #fcfffa;
+}
+.topHeader > .appDownload{
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+    font-size: 15px;
+    color: #fff;
+
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+    color: #fff;
+    font-size: 15px;
+}
+.topHeader > .appDownload::after{
+    border-color: #fff;
+    border-radius: 37.5%/100%;
+    width: 200%;
+    height: 200%;
+    border-width: 1px;
+    position: absolute;
+    z-index: 2;
+    content: '';
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    box-sizing: border-box;
+    transform-origin: top left;
+    border: 0 solid rgba(0, 0, 0, .1);
+}
+
+/* ************** recommendSongs推荐歌单 ******************** */
+main{
+    padding-top: 40px;
+}
+main > nav{
+    position: fixed;
+    top: 64px;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: #fff;
+}
+nav > ul{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+nav > ul > li{
+    width: 33.3%;
+    height: 100%;
+    text-align: center;
+    cursor: pointer;
+}
+nav > ul > li div{
+    height: 100%;
+    display: inline-block;
+    padding: 0 5px;
+    line-height: 40px;
+    font-size: 15px;
+    position: relative;
+    font-size: 15px;
+}
+nav > ul > li div > span{
+    vertical-align: middle;
+}
+nav > ul > li div::after{
+    content: '';
+    display: block;
+    width: 100%;
+    height: 4px;
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    z-index: 3;
+    transform: scaleY(0.5);
+}
+nav > ul > li.active span{
+    color: #d33a31;
+}
+nav > ul > li.active div::after{
+    background: #d33a31;
+}
+
+
+section.recommendSongs{}
+
+h2.sectionTitle{
+    margin: 10px 0 15px;
+    border-left: 2px solid #d43b33;
+    padding-left: 8px;
+}
+.recommendSongs > ul{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+.recommendSongs > ul> li{
+    flex-basis: calc(33.3% - 1px);
+    width: 122px;
+    margin-bottom: 20px;
+}
+.recommendSongs > ul > li > .recommendImg{
+    width: 32.8vw;
+height: 32.8vw;
+    margin-bottom: 8px;
+    background: palevioletred;   
+}
+.recommendSongs > ul > li > .introduce{
+    font-size: 12px;
+}
+
+/* ************** newestSongs最新音乐歌单 ******************** */
+section.newestSongs{
+    
+}
+section.newestSongs> ul{
+    padding-left: 8px;
+}
+section.newestSongs> ul > li{
+    padding: 12px 0 8px;
+    border-bottom: 1px solid #efeff1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+section.newestSongs> ul > li > .song > h3{
+    font-size: 16px;
+}
+section.newestSongs> ul > li > .song > .description{
+    font-size: 12px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+section.newestSongs> ul > li > .song > .description >svg{
+    width: 12px;
+    height: 8px;
+    fill: #ffa58f;
+    margin-right: 3px;
+}
+section.newestSongs> ul > li > svg{
+    width: 45px;
+    height: 45px;
+    fill: #ababad;
+    margin-right: 10px;
+}
+
+/* ************** footer尾部模块 ******************** */
+footer{
+    margin: 67px 0 20px;
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+footer > .footerLogo{
+    /* border: 1px solid red; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+footer > .footerLogo > svg{
+    width: 43px;
+    height: 43px;
+}
+footer > .footerLogo > span{
+    margin-left: 10px;
+    font-size: 30px;
+}
+footer > .openButton{
+    border: 1px solid red;
+    margin-top: 15px;
+    font-size: 15px;
+    color: #d2000d;
+    padding: 12px 48px;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+}
+footer > .openButton > svg{
+    fill: red;
+    margin-left: -4px;
+    width: 18px;
+    height: 16px;
+}
+footer > address{
+    /* border: 1px solid red; */
+    margin-top: 7px;
+    font-size: 10px;
+}
