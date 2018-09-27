@@ -1,8 +1,11 @@
 {
     let view = new View({
         el: '.newAndEdit-inner',
+        data: {
+            status: '添加',     // 三种状态：添加、完善、修改
+        },
         template:`
-            <h2>请{newOrUpdate}歌曲信息</h2>
+            <h2>请{newOrUpdate}歌曲</h2>
             <div class="allInput">
                 <form id="songMessage" data-ele="form">
                     <div class="row">
@@ -30,6 +33,10 @@
                         <input type="text" id="singer" value="{singer}">
                     </div>
                     <div class="row">
+                        <label for="playList">所属歌单：</label>
+                        <input type="text" id="playList" value="{playList}">
+                    </div>
+                    <div class="row">
                         <input type="submit" id="submit" form="songMessage" value="点击保存">
                     </div>
                     <div class="row coverView">
@@ -45,55 +52,31 @@
         `,
         render(data){
             let newTemplate = this.template
-            this.placeholder.map((item)=>{
-                if(!data[item]){ data[item]='' }
+            let placeholder = ['songName', 'singer', 'songUrl', 'coverUrl', 'playList']
+            newTemplate = newTemplate.replace('{newOrUpdate}', this.data.status)
+            placeholder.map((item)=>{
                 newTemplate = newTemplate.replace(`{${item}}`, data[item])
             })
-            if(data.status === 'new'){
-                newTemplate = newTemplate.replace('{newOrUpdate}', '完善')
-            }else if(data.status === 'update'){
-                newTemplate = newTemplate.replace('{newOrUpdate}', '修改')
-            }
-            this.o_el.innerHTML = newTemplate
+            this.o_el.innerHTML = newTemplate         
         },
-        placeholder: ['songName', 'singer', 'songUrl', 'coverUrl', 'lyrics'],
         renderCoverPicture(data){
             if(data.song.coverUrl){
                 this.o_el.querySelector('img[name=coverImg]').setAttribute('src', data.song.coverUrl)
             }
-        },
-        toggleShowOrHidden(data){
-            if(data === 'show'){
-                this.o_el.parentElement.classList.add('active')
-            }else if(data === 'hidden'){
-                this.o_el.parentElement.classList.remove('active')
-            }
-            
         }
     })
 
     let model = new Model({
-// 对象模型：{name:'', singer:'', songUrl:'', coverUrl:'', lyrics:'', loaded:'', size:'', percent:'', status:''}
-        data: { status: 'new' },
         resourceName: 'Song',
-        afterFetch(responseData){
-            Object.assign(this.data, {id:responseData.id}, responseData.attributes)
-        },
-        afterSave(responseData){
-            let newCreatedAt = this.handleDate(responseData.createdAt)
-            let newUpdatedAt = this.handleDate(responseData.updatedAt)
-            Object.assign(this.data, 
-                {id:responseData.id, createdAt:newCreatedAt, updatedAt:newUpdatedAt}, 
-                responseData.attributes)
-        },
-        afterUpdate(responseData){
-            Object.assign(this.data, {id:responseData.id}, responseData.attributes)
-        },
-        handleDate(date){
-            let year = date.getFullYear()
-            let month = date.getMonth()+1
-            let day = date.getDate()
-            return `${year}.${month}.${day}`
+        data: {
+            songName: '',
+            singer: '',
+            songUrl: '',
+            coverUrl: '',
+            lyrics: '',
+            createdAt: '',
+            updatedAt: '',
+            playList: '',
         }
     })
 
@@ -114,41 +97,49 @@
             this.view.render(this.model.data)
         },
         triggerSongUpload(){
-            window.eventHub.trigger('fileUploadToQiNiu', {fileType: 'song'})
+            window.eventHub.trigger('fileUploadToQiNiu', {fileType: '歌曲'})
         },
         triggerCoverUpload(){
-            window.eventHub.trigger('fileUploadToQiNiu', {fileType: 'cover'})
+            window.eventHub.trigger('fileUploadToQiNiu', {fileType: '封面'})
         },
         NewOrUploadSong(target, ev){
             let inputData = {}
-            let data = ['songName', 'singer', 'songUrl', 'coverUrl']
+            let data = ['songName', 'singer', 'songUrl', 'coverUrl', 'playList']
             data.map((item)=>{
                 inputData[item] = this.view.o_el.querySelector(`input[id=${item}]`).value
             })
             inputData.lyrics = this.view.o_el.querySelector('textarea').innerText
-            if(this.model.data.status === 'new'){
-                // 掉进陷阱：自动更新页面
-                this.saveToLeanCloud_proxy(inputData)
-            }else if(this.model.data.status === 'update'){
-                // 掉进陷阱：自动更新页面
-                this.updateToLeanCloud_proxy(inputData)
-            }
+            this.saveToLeanCloud_proxy(inputData).then(()=>{
+                if(this.view.data.status === '修改'){
+                    console.log('修改')
+                    window.eventHub.trigger('selectTab', {tabName: 'tab_songList'})
+                    window.eventHub.trigger('updateSongComplete', this.model.data)
+                }else if(this.view.data.status === '新建'){
+                    window.eventHub.trigger('selectTab', {tabName: 'tab_songList'})
+                    window.eventHub.trigger('newSongComplete', this.model.data)
+                }  
+            })
         },
         afterSelectTab(data){
             if(data.tabName === 'tab_newAndEdit'){
-                this.view.toggleShowOrHidden('show')
+                this.view.toggleActive2('.newAndEdit', 'active')
                 this.view.render(this.model.data)
             }else{
-                this.view.toggleShowOrHidden('hidden')
+                this.view.toggleActive2('.newAndEdit', 'deactive')
             }
         },
         afterSelecteSong(data){
-            this.model.data.status = 'update'
+            this.view.data.status = '修改'
             // 掉进陷阱：自动更新页面
             this.fetchFromLeanCloud_proxy(data.id)
         },
-        afterSaveToQiNiuComplete(data){
-            Object.assign(this.model.data, data)
+        afterSaveToQiNiuComplete(obj){
+            Object.assign(this.view.data, {status: '完善'})
+            if(obj.fileType === '歌曲'){
+                Object.assign(this.model.data, {songName: obj.data.name, songUrl: obj.data.url})
+            }else if(obj.fileType === '封面'){
+                Object.assign(this.model.data, {coverName: obj.data.name, coverUrl: obj.data.url})
+            }
             this.view.render(this.model.data)
         }
     })

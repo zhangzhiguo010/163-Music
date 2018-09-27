@@ -392,6 +392,7 @@ main{grid-area: main;}
     align-items: flex-start;
     padding: 32px 32px 0 30px;
     background: #ffffff;
+    position: relative;
 }
 .uploadSong-inner .uploadView .songImgLi svg{
     width: 45px;
@@ -422,6 +423,17 @@ main{grid-area: main;}
 .uploadSong-inner .uploadView .songDetails .growBar .growBarInner{
     height: 100%;
     background: #00a5cf;
+}
+.uploadSong-inner .uploadView .songClose{
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    padding: 5px 10px;
+}
+.uploadSong-inner .uploadView .songClose > svg{
+    width: 15px;
+    height: 15px;
+    fill: #0c95df;
 }
 .uploadSong-inner .uploadSongArea{
     width: 368px;

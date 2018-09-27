@@ -102,6 +102,7 @@
         },
         toggleShowOrHidden(data){
             if(data === 'show'){
+                console.log('显示')
                 this.o_el.parentElement.classList.add('active')
             }else if(data === 'hidden'){
                 this.o_el.parentElement.classList.remove('active')
@@ -183,6 +184,7 @@
         afterSelectTab(data){
             if(data.tabName === 'tab_songList'){
                 this.view.toggleShowOrHidden('show')
+                this.view.render(this.model.data)
             }else{
                 this.view.toggleShowOrHidden('hidden')
             }
@@ -193,8 +195,8 @@
         },
         afterUpdateSongComplete(data){
             this.model.data.songs.map((song)=>{
-                if(song.id === data.song.id){
-                    Object.assign(song, data.song)
+                if(song.id === data.id){
+                    Object.assign(song, data)
                     this.view.render(this.model.data)
                 }
             })
