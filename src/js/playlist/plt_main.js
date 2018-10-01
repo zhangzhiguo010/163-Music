@@ -1,17 +1,18 @@
 {
-    let view = new View({
-        el: 'section.fshSongs',
+    let view = new View2({
+        el: '.menu_songList',
         template: `
-            <h2 class="sectionTitle">最新音乐</h2>
-            <ol class="songsWrapper"></ol>
+            <h3>歌曲列表</h3>
+            <ol class="songsWrapper">
         `,
         render(data){
             this.o_el.innerHTML = this.template
             let ul = this.o_el.querySelector('ol[class=songsWrapper]')
-            data.songs.slice(0,10).map((item)=>{
+            data.songs.map((item, index)=>{
                 let li = document.createElement('li')
                 li.innerHTML = `
-                    <a href="" class="songLink">
+                    <div class="songNumber">${index+1}</div>
+                    <a class="songLink" href="#">
                         <h3 class="songName">${item.songName}</h3>
                         <p class="singer">
                             <svg class="icon songSq" aria-hidden="true">
@@ -24,41 +25,42 @@
                         </svg>
                     </a>
                 `,
-                li.setAttribute('data-id', item.id)
+                li.setAttribute('data-songId', item.songId)
                 ul.appendChild(li)
             })
         }
     })
-
-    let model = new Model({
-        resourceName: 'Song',
+    let model = new Model2({
         data: {
             songs: []
-        },
-        fetchAll(){
-            songStorage = new AV.Query('Song')
-            return songStorage.find().then((responseData)=>{
-                this.data.songs = responseData.map((item)=>{
-                    return {
-                        id: item.id,
-                        songName: item.attributes.songName,
-                        singer: item.attributes.singer
-                    }
-                })
-            })
         }
-
     })
-
-    let controller = new Controller({
+    let controller = new Controller2({
         view: view,
         model: model,
+        eventHub: [
+            {type: 'uploadMenu', fn: 'listenUploadMenu'}
+        ],
         init(){
             this.view.init()
-            this.model.fetchAll().then(()=>{
+            this.bindEventHub()
+        },
+        listenUploadMenu(obj){
+            let menuItem = AV.Object.createWithoutData('Playlist', obj.menuData.menuId)
+            let songStorage = new AV.Query('Song')
+            songStorage.equalTo('dependent', menuItem)
+            return songStorage.find().then((responseData)=>{
+                this.model.data.songs = responseData.map((item)=>{
+                    return {
+                        songId: item.id,
+                        songName: item.attributes.songName,
+                        singer: item.attributes.singer,
+                    }
+                })
                 this.view.render(this.model.data)
             })
         }
     })
+
     controller.init()
 }

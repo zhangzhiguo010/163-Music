@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>后台管理界面</title>
     <link rel="stylesheet" href="./css/admin.css">
+    <link rel="stylesheet" href="./css/adminDefault.css">
 </head>
 <body>
     <div class="wrapper">
@@ -17,7 +18,7 @@
         </aside>
         <main>
             <div class="main-inner">
-                <div class="songList active">
+                <div class="songList">
                     <div class="songList-inner"></div>
                 </div>
                 <div class="newAndEdit">
@@ -25,6 +26,18 @@
                 </div>
                 <div class="uploadSong">
                     <div class="uploadSong-inner"></div>
+                </div>
+                <div class="menuList">
+                    <div class="menuList-inner"></div>
+                </div>
+                <div class="newMenu">
+                    <div class="newMenu-inner"></div>
+                </div>
+                <div class="menuAddSong">
+                    <div class="menuAddSong-inner"></div>
+                </div>
+                <div class="menuCheckSong">
+                    <div class="menuCheckSong-inner"></div>
                 </div>
             </div>
         </main>
@@ -35,7 +48,7 @@
 
 
 
-    <script src="//at.alicdn.com/t/font_843654_w0sy0ik5le.js"></script>
+    <script src="//at.alicdn.com/t/font_843654_cx5w2r25ndf.js"></script>
     <script src="../node_modules/axios/dist/axios.min.js"></script>
     <script src="../node_modules/leancloud-storage/dist/av-min.js"></script>
     <script src="../node_modules/qiniu-js/dist/qiniu.min.js"></script>
@@ -43,11 +56,16 @@
     
     <script src="./js/admin/eventHub.js"></script>
     <script src="./js/admin/MVC/MVC.js"></script>
+    <script src="./js/admin/MVC/MVC新的.js"></script>
 
     <script src="./js/admin/header.js"></script>
     <script src="./js/admin/aside.js"></script>
     <script src="./js/admin/songList.js"></script>
-    <script src="./js/admin/newAndEdit.js"></script>
-    <script src="./js/admin/uploadToQiNiu.js"></script>
+    <script src="./js/admin/menuList.js"></script>
+    <script src="./js/admin/newSong.js"></script>
+    <script src="./js/admin/newMenu.js"></script>
+
+    <script src="./js/admin/menuAddSong.js"></script>
+    <script src="./js/admin/menuCheckSong.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
         data: {
             selectedId: ''
         },
-        el: '.songList-inner',
+        el: '.menuCheckSong-inner',
         template:`
             <div class="amount-wrapper">
                 <svg class="icon" aria-hidden="true">
@@ -60,13 +60,7 @@
             <div>{singer}</div>
             <div>{menuName}</div>
             <div class="congtrolTag">
-                <div data-ele="editSong">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-bianji"></use>
-                    </svg>
-                    <span>编辑</span>
-                </div>
-                <div>
+                <div data-ele="removeSong">
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-dustbin"></use>
                     </svg>
@@ -81,17 +75,17 @@
             </div>    
         `,
         render(data){
-            let ul = this.o_el.querySelector('ul[class=item-wrapper]')
             let placeholder = ['coverUrl', 'songName', 'singer', 'menuName']
             data.songs.map((song)=>{
+                let ul = this.o_el.querySelector('ul[class=item-wrapper]')
                 let li = document.createElement('li')
                 let newTemplate = this.templateLi
                 placeholder.map((item)=>{
                     newTemplate = newTemplate.replace(`{${item}}`, song[item] || '')
                 })
                 li.innerHTML = newTemplate
-                li.setAttribute('data-id', song.id)
-                li.setAttribute('data-ele', 'listItem')
+                li.setAttribute('data-id', song.songId)
+                li.setAttribute('data-ele', 'liItem')
                 li.classList.add('autoCreateSongLi')
                 ul.appendChild(li)
             })
@@ -100,6 +94,7 @@
 
     let model = new Model2({
         data: {
+            menuId: '',    // 被点击添加歌曲按钮的那个歌单的id值
             // [{id:'', coverUrl:'', songName:'', singer:'', menuName:''}, {...}]
             songs: []
         }
@@ -109,77 +104,53 @@
         view: view,
         model: model,
         events: [
-            {ele: 'listItem', type: 'click', fn: 'handleListItem'},
-            {ele: 'editSong', type: 'click', fn: 'handleEditSong'},
+            {ele: 'liItem', type: 'click', fn: 'handleLiItem'},
+            {ele: 'removeSong', type: 'click', fn: 'handleRemoveSong'}
         ],
         eventHub: [
-            {type: 'selectTab', fn: 'listenSelectTab'},
-            {type: 'editSongComplete', fn: 'listenEditSongComplete'},
-            {type: 'newSongComplete', fn: 'listenNewSongComplete'},
+            {type: 'menuCheckSong', fn: 'listenMenuCheckSong'},
+            {type: 'selectTab', fn: 'listenSelectTab'}
         ],
         init(){
             this.view.init()
-            this.bindProxy()
             this.bindEvents()
             this.bindEventHub()  
         },
-        listenSelectTab(obj){
-            // console.log(0)
-            this.view.toggleShowOrHidden(obj.tabName, 'tab_songList', '.songList')
+        listenSelectTab(){
+            document.querySelector('.menuCheckSong').classList.remove('active')
+        },
+        listenMenuCheckSong(obj){
+            // obj.data: 歌单中所有歌曲，obj.menuId: 被点击查看按钮的那个歌单
+            document.querySelector('.menuCheckSong').classList.add('active')
             this.model.data.songs = []
-            // 找到所有歌曲
-            let songStorage = new AV.Query('Song')
-            // console.log(1)
-            songStorage.find().then((responseData)=>{
-                // console.log(2)
-                responseData.map((item)=>{ 
-                    // console.log(3)
-                    this.xx(item).then(()=>{
-                        // console.log(6)
-                        this.view.init()
-                        this.view.render(this.model.data)
-                    })
+            // 通过歌单id找到内部歌曲
+            this.model.data.menuId = obj.menuId
+            obj.data.map((item)=>{
+                let songId = item.id
+                let {songName, songUrl, coverUrl, singer, compose, lyrics, menuName} =  item.attributes
+                this.model.data.songs.push({
+                    songId: songId, 
+                    songName: songName, 
+                    songUrl: songUrl, 
+                    coverUrl: coverUrl, 
+                    singer: singer, 
+                    compose: compose, 
+                    lyrics: lyrics,
+                    menuName: menuName,
                 })
             })
+            this.view.init()
+            this.view.render(this.model.data)
         },
-        // 找到歌曲对应的歌单名
-        xx(item){
-            // console.log(4)
-            let menuName
-            let songItem = AV.Object.createWithoutData('Song', item.id)
-            return songItem.fetch({ include: ['dependent'] }).then((data)=>{
-                // console.log(5)
-                menuName = data.get('dependent').attributes.songMenuName
-                this.model.data.songs.push(Object.assign({}, item.attributes, {id: item.id, menuName: menuName}))
-            })
-        },
-        // 监听编辑完歌曲，更新data中对应的歌曲信息，更新页面
-        listenEditSongComplete(data){
-            document.querySelector('.songList').classList.add('active')
-            this.model.data.songs.map((song)=>{
-                if(song.id === data.id){
-                    Object.assign(song, data)
-                    this.view.render(this.model.data)
-                }
-            })
-        },
-        listenNewSongComplete(data){
-            document.querySelector('.songList').classList.add('active')
-            let menuStorage = new AV.Query('Playlist')
-            menuStorage.get(data.dependent.id).then((responseData)=>{
-                let menuName = responseData.attributes.songMenuName
-                this.model.data.songs.push({coverUrl: data.coverUrl, songName: data.songName, singer: data.singer, menuName: menuName})
-                this.view.render(this.model.data)
-            })
-        },
-        // 处理歌曲的点击，记录id值
-        handleListItem(target){
+        // 记录点击的那首歌曲的id值
+        handleLiItem(target){
             this.view.data.selectedId = target.getAttribute('data-id')
         },
-        // 处理触发标签切换，触发编辑歌曲事件
-        handleEditSong(){
-            window.eventHub.trigger('editSong', {id: this.view.data.selectedId})
-            document.querySelector('.songList').classList.remove('active')
+        handleRemoveSong(){
+            let songItem = AV.Object.createWithoutData('Song', this.view.data.selectedId)
+            let menuItem = AV.Object.createWithoutData('Playlist', '5bb0ba970b6160006ad8592f')
+            songItem.set('dependent', menuItem)
+            songItem.save()
         }
     })
 

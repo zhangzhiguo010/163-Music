@@ -6,7 +6,7 @@ window.eventHub = {
         }
         this.events[eventName].push(fn)
     },
-    trigger(eventName, options){
+    trigger(eventName, options,){
         for(let key in this.events){
             if(key === eventName){
                 this.events[eventName].map((item)=>{

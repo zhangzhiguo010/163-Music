@@ -1,497 +1,53 @@
-/* 样式初始化 */
-*{margin: 0; padding: 0;}
-*{box-sizing: border-box;}
-.clearfix::after{
-    content: '';
-    display: block;
-    clear: both;
-}
-a{text-decoration: none;color: inherit;}
-ul, ol{list-style: none;}
-body{
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 16px;
-    background: #ffffff;
-}
-/****************************** 整体布局 ***************************/
-.wrapper{
-    max-width: 1280px;
-    height: auto;
-    background: #ecf0f3;
-    display: grid;
-    grid-template:
-        "header header" 60px
-        "aside main"    570px
-        "aside ." 82px
-        /167px 1052px;
-}
-header{grid-area: header;}
-aside{grid-area: aside;}
-main{grid-area: main;}
-
-/****************************** header头部模块 ***************************/
-.header-inner{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 65px 15px 15px;
-    background: #5ccec6;
-    border-radius: 5px;
-}
-.header-inner .logo{
-    display: flex;
-    align-items: center;
-}
-.header-inner .logo .icon{
-    height: 30px;
-    width: 30px;
-}
-.header-inner .logo .icon:nth-child(2){
-    margin-left: 5px;
-}
-.header-inner .welcome{
-    font-size: 24px;
-}
-.header-inner .logInAndOut a:nth-child(2){
-    margin-left: 18px;
-}
-.header-inner .logInAndOut a:hover{
-    background: black;
-}
-/****************************** aside目录模块 ***************************/
-.aside-inner{
-    height: calc(100% - 20px);
-    margin-top: 20px;
-    background: #2d3e4e;
-    color: #ffffff;
-    border-radius: 0 5px 5px 0;
-}
-.aside-inner > ul{
-    padding-top: 20px;
-    /* height: 100%; */
-}
-.aside-inner > ul > li{
-    background: #425261;
-    /* border: 1px solid red; */
-    display: flex;
-    /* justify-content: flex-start; */
-    align-items: center;
-    padding: 20px;
-}
-.aside-inner > ul > li:nth-child(1){
-    background: #2d3e4e;
-}
-.aside-inner > ul > li.active{
-    background: #253141;
-}
-.aside-inner > ul > li > svg{
-    width: 16px;
-    height: 16px;
-    fill: #ffffff;
-}
-.aside-inner > ul > li > span{
-    font-size: 10px;
-    margin-left: 15px;
-}
-/****************************** main主体 ***************************/
-.main-inner{
-    background: #ffffff;
-    margin: 20px 40px 0 20px;
-    border-radius: 5px;
-    overflow: hidden;
-    height: 100%;;
-    /* border: 3px solid black; */
-}
-
-/****************************** songList模块 ***************************/
+/*********************** 歌曲列表展示 ***************************/
 .songList{
     display: none;
 }
 .songList.active{
     display: block;
 }
-.songList-inner{
-    height: 550px;
-    background: #ffffff;
-    display: grid;
-    grid-template:
-        ". amount     amount     amount     amount     create ."     56px
-        ". songsItem  songsItem  songsItem  songsItem  songsItem ."  1fr
-        ". select     delete     delete     delete     page ."       94px
-        /1fr 54px 108px 170px 170px 380px 1fr;
-}
-.songsAmount-wrapper{grid-area: amount;}
-.create-wrapper{grid-area: create;}
-.songsItem-wrapper{grid-area: songsItem;}
-.selectButton-wrapper{grid-area: select;}
-.deleteButton-wrpper{grid-area: delete;}
-.page-wrapper{grid-area: page}
 
-.songsAmount-wrapper{
-    padding: 20px 0 20px 4px;
-    display: flex;
-    align-items: center;
+/* *********************** 歌单列表展示 ******************************************* */
+.menuList{
+    display: none;
 }
-.songsAmount-wrapper svg{
-    width: 15px;
-    height: 15px;
-}
-.songsAmount-wrapper span{
-    margin-left: 14px;
-    font-size: 10px;
-    color: #7bb8a8;
-}
-.create-wrapper{
-    padding: 14px 0;
-
-}
-.create-wrapper .createButton{
-    width: 110px;
-    height: 28px;
-    background: #5bcecb;
-    border-radius: 5px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    float: right;
-}
-.create-wrapper .createButton svg{
-    width: 14px;
-    height: 14px;
-}
-.create-wrapper .createButton span{
-    font-size: 10px;
-    margin:0 20px 0 12px;
-    color: white;
+.menuList.active{
+    display: block;
 }
 
-
-.songsItem-wrapper > li{
-    display: flex;
-    align-items: center;
-    text-align: center;
-    border: 1px solid #ecf0f3;
+/* *********************** 歌单列表：查看歌曲 ******************************************* */
+.menuCheckSong{
+    display: none;
 }
-.songsItem-wrapper > li.active{
-    color: red;
-}
-.songsItem-wrapper > li:nth-child(2n+1){
-    background: #edf1f4;
-}
-.songsItem-wrapper > li:nth-child(2n){
-    background: #ffffff;
-}
-.songsItem-wrapper > li > div{
-    flex-grow: 1;
-    font-size: 10px;
-    padding: 10px 0;
-}
-.songsItem-wrapper > li:nth-child(2n) > div{
-    border-right: 1px solid #ecf0f3;
-}
-.songsItem-wrapper > li > div:nth-child(1){
-    width: 52px;
-}
-.songsItem-wrapper > li > div:nth-child(2),
-.songsItem-wrapper > li > div:nth-child(3){
-    width: 107px;
+.menuCheckSong.active{
+    display: block;
 }
 
-.songsItem-wrapper > li > div:nth-child(4){
-    width: 172px;
+/* *********************** 歌单列表：添加歌曲 ******************************************* */
+.menuAddSong{
+    display: none;
 }
-.songsItem-wrapper > li > div:nth-child(5){
-    width: 242px;
-}
-.songsItem-wrapper .autoCreateSongLi .congtrolTag{
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-}
-.songsItem-wrapper .autoCreateSongLi .coverImgWrapper img{
-    width: 15px;
-    height: 15px;
-}
-.songsItem-wrapper .autoCreateSongLi .congtrolTag div{
-    display: flex;
-    align-items: center;
-    padding: 6px 3px;
-    cursor: pointer;
-    /* flex-basis:  */
-}
-.songsItem-wrapper .autoCreateSongLi .congtrolTag div svg{
-    margin-right: 6px;
-    width: 16px;
-    height: 16px;
+.menuAddSong.active{
+    display: block;
 }
 
-.selectButton-wrapper,
-.deleteButton-wrpper,
-.page-wrapper{
-    padding: 35px 0;
-    font-size: 10px;
-    display: flex;
-    align-items: center;
-}
-.selectButton-wrapper span:nth-child(1){
-    width: 12px;
-    height: 12px;
-    background: black;
-}
-.deleteButton-wrpper > span{
-    display: inline-block;
-    margin-left: 20px;
-    padding: 5px 12px;
-    border: 2px solid #ecf0f3;
-    border-radius: 5px;
-}
-.page-wrapper > div{
-    flex-grow: 1;
-}
-.page-wrapper > div > .previousPageButton,
-.page-wrapper > div > .nextPageButton
-{
-    float: right;
-    margin-right: 10px;
-    display: flex;
-    align-items: center;
-}
-.page-wrapper svg{
-    width: 20px;
-    height: 20px;
-}
-.page-wrapper > div > .previousPageButton span{
-    margin-left: 5px;
-}
-.page-wrapper > div > .nextPageButton span{
-    margin-right: 5px;
-}
-
-
-
-/****************************** newAndEdit模块 ***************************/
+/* *********************** 新建歌曲 ******************************************* */
 .newAndEdit{
     display: none;
-    background: #ecf0f3;
 }
 .newAndEdit.active{
     display: block;
 }
-.newAndEdit-inner{
-    height: 100%;
-    padding: 15px 48px 36px;
-    /* background: palegreen; */
-}
-.newAndEdit-inner > h2{
-    /* border: 1px solid black; */
-    margin-top: 6px;
-}
-.newAndEdit-inner > .allInput{
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-}
-.allInput > form{
-    flex-basis: 60%;
-    height: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 5px;
-}
-.allInput > form > .row{
-    flex-basis: calc(50% - 16px);
-    margin-bottom: 28px;
-    border-radius: 5px;
-}
-
-.allInput > form > .row > input,
-.allInput > form > .row > .songUploadArea,
-.allInput > form > .row > .coverUploadArea{
-    border: 1px solid black;
-    width: calc(100% - 20px);
-    height: 35px;
-    margin-top: 10px;
-    padding: 10px 0 10px 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    position: relative;
-    background: #ffffff;
-}
-.allInput > form > .row > .songUploadArea,
-.allInput > form > .row > .coverUploadArea{
-    display: flex;
-    align-items: center;
-}
-.allInput > form > div.coverView{
-    flex-basis: 100%;
-}
-.allInput > form > div.coverView > .coverView-inner{
-    width: 100px;
-    height: 100px;
-}
-.allInput > form > div.coverView > .coverView-inner > img{
-    width: 100%;
-    height: 100%;
-}
-.allInput > div.lyricsWrapper{
-    flex-basis: calc(40% - 20px);
-    height: 100%;
-}
 
 
 
-
-
-
-
-
-
-
-
-
-
-/****************************** uploadWrapper模块 ***************************/
-.uploadSong{
+/* *********************** 新建歌单 ******************************************* */
+.newMenu{
     display: none;
 }
-.uploadSong.active{
+.newMenu.active{
     display: block;
 }
-.uploadSong-inner{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-}
-.uploadSong-inner .uploadWrapper-background{
-    width: 100%;
-    height: 100%;
-    background: #00a6d0;
-    opacity: 0.5;
-}
-.uploadSong-inner .uploadWrapper{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 368px;
-    border-radius: 15px;
-    overflow: hidden;
-}
 
-.uploadSong-inner .uploadView{
+#songMenuCover{
     width: 100%;
-    height: 120px;
-    display: flex;
-    align-items: flex-start;
-    padding: 32px 32px 0 30px;
-    background: #ffffff;
-    position: relative;
-}
-.uploadSong-inner .uploadView .songImgLi svg{
-    width: 45px;
-    height: 50px;
-    fill: #00a1cb;
-}
-.uploadSong-inner .uploadView .songDetails{
-    margin-left: 18px;
-}
-.uploadSong-inner .uploadView .songDetails .areaHeader{
-    /* border: 1px solid red; */
-    height: 12px;
-    font-size: 12px;
-}
-.uploadSong-inner .uploadView .songDetails .areaMiddle{
-    margin-top: 8px;
-    font-size: 8px;
-    /* border: 1px solid red; */
-}
-.uploadSong-inner .uploadView .songDetails .growBar{
-    width: 240px;
-    height: 6px;
-    margin-top: 12px;
-    background: #a3e7fc;
-    border-radius: 4px;
-    overflow: hidden;
-}
-.uploadSong-inner .uploadView .songDetails .growBar .growBarInner{
-    height: 100%;
-    background: #00a5cf;
-}
-.uploadSong-inner .uploadView .songClose{
-    position: absolute;
-    top: 25px;
-    right: 25px;
-    padding: 5px 10px;
-}
-.uploadSong-inner .uploadView .songClose > svg{
-    width: 15px;
-    height: 15px;
-    fill: #0c95df;
-}
-.uploadSong-inner .uploadSongArea{
-    width: 368px;
-    height: 210px;;
-    background: #a3e7fc;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.uploadSong-inner .uploadSongArea .drapArea{
-    position: relative;
-    border: 1px dashed gray;
-    padding: 4px 55px 0;
-}
-.uploadSong-inner .uploadSongArea .drapArea input{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-}
-.uploadSong-inner .uploadSongArea .drapArea svg{
-    width: 100px;
-    height: 70px;
-    fill: #00a1cb;
-}
-.uploadSong-inner .uploadSongArea > p.hintDrag{
-    margin-top: 16px;
-    line-height: 16px;
-    font-size: 16px;
-}
-.uploadSong-inner .uploadSongArea > p.hintOr{
-    margin-top: 10px;
-    line-height: 10px;
-    font-size: 10px;
-}
-.uploadSong-inner .uploadSongArea div.chooseFileButton{
-    height: 32px;
-    padding: 12px 46px;
-
-    position: relative;
-    font-size: 10px;
-    margin-top: 14px;
-    padding: 12px 46px;
-    color: #ffffff;
-    background: #00a1cb;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-}
-.uploadSong-inner .uploadSongArea div.chooseFileButton input{
-    width: 100%;
-    height: 100%;
-    background: palegoldenrod;
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0;
 }

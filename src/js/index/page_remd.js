@@ -25,6 +25,7 @@
         ],
         init(){
             this.view.init()
+            this.view.toggleShowOrHidden('show')
             this.bindEventHub()
             this.loadModules()
         },

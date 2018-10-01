@@ -3,11 +3,20 @@
         el: 'section.remdSongs',
         template: `
             <h2 class="sectionTitle">推荐歌单</h2>
-            <ul>
-                <li>
-                    <a href="#" class="remd_cover">
+            <ul></ul>
+        `,
+        render(data){
+            data.menus.slice(0,6).map((item)=>{
+                let ul = this.o_el.querySelector('ul')
+                let li = document.createElement('li')
+                let placeholder = ['coverUrl', 'menuName']
+                placeholder.map((key)=>{
+                    if(!item[key]){ item[key] = '' }
+                })
+                li.innerHTML = `
+                    <figure class="remd_cover">
                         <div class="remd_imgWrapper">
-                            <img src="http://p1.music.126.net/B2RjM_mkyBxeDCS6OlwKyw==/109951163430806499.webp?imageView&thumbnail=246x0&quality=75&tostatic=0&type=webp" alt="" class="remd_img">
+                            <img src="${item.coverUrl}" alt="" class="remd_img">
                             <div class="remd_praise">
                                 <svg class="icon remd_erjiSvg" aria-hidden="true">
                                     <use xlink:href="#icon-erji"></use>
@@ -15,90 +24,57 @@
                                 100.5万
                             </div>
                         </div>
-                        <p class="remd_text">香港乐坛女子图鉴（1983-2005）</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="remd_cover">
-                        <div class="remd_imgWrapper">
-                            <img src="http://p1.music.126.net/1XHvQ3RMs2xOpNqBzewHtA==/109951163556989142.webp?imageView&thumbnail=246x0&quality=75&tostatic=0&type=webp" alt="" class="remd_img">
-                            <div class="remd_praise">
-                                <svg class="icon remd_erjiSvg" aria-hidden="true">
-                                    <use xlink:href="#icon-erji"></use>
-                                </svg>
-                                100.5万
-                            </div>
-                        </div>
-                        <p class="remd_text">人生如旅行，各自修行各自向前</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="remd_cover">
-                        <div class="remd_imgWrapper">
-                            <img src="http://p1.music.126.net/2LIFpjhtGk0l67uB7ZCQug==/109951163402375543.webp?imageView&thumbnail=246x0&quality=75&tostatic=0&type=webp" alt="" class="remd_img">
-                            <div class="remd_praise">
-                                <svg class="icon remd_erjiSvg" aria-hidden="true">
-                                    <use xlink:href="#icon-erji"></use>
-                                </svg>
-                                100.5万
-                            </div>
-                        </div>
-                        <p class="remd_text">" 不思进取 思你 "</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="remd_cover">
-                        <div class="remd_imgWrapper">
-                            <img src="http://p1.music.126.net/DCAbjT2LYTmshb_Eam9Z5w==/109951163558350135.webp?imageView&thumbnail=246x0&quality=75&tostatic=0&type=webp" alt="" class="remd_img">
-                            <div class="remd_praise">
-                                <svg class="icon remd_erjiSvg" aria-hidden="true">
-                                    <use xlink:href="#icon-erji"></use>
-                                </svg>
-                                100.5万
-                            </div>
-                        </div>
-                        <p class="remd_text">人不如故 工作中听的华语歌单 生活中的BGM</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="remd_cover">
-                        <div class="remd_imgWrapper">
-                            <img src="http://p1.music.126.net/kzYYqG0uJ8JKz34iBSRdMw==/109951163460068973.webp?imageView&thumbnail=246x0&quality=75&tostatic=0&type=webp" alt="" class="remd_img">
-                            <div class="remd_praise">
-                                <svg class="icon remd_erjiSvg" aria-hidden="true">
-                                    <use xlink:href="#icon-erji"></use>
-                                </svg>
-                                100.5万
-                            </div>
-                        </div>
-                        <p class="remd_text">提神醒脑 疯狂抖腿魔性摇头.GIF</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="remd_cover">
-                        <div class="remd_imgWrapper">
-                            <img src="http://p1.music.126.net/EBRqPmY8k8qyVHyF8AyjdQ==/18641120139148117.webp?imageView&thumbnail=246x0&quality=75&tostatic=0&type=webp" alt="" class="remd_img">
-                            <div class="remd_praise">
-                                <svg class="icon remd_erjiSvg" aria-hidden="true">
-                                    <use xlink:href="#icon-erji"></use>
-                                </svg>
-                                100.5万
-                            </div>
-                        </div>
-                        <p class="remd_text">美国Billboard周榜</p>
-                    </a>
-                </li>
-            </ul>
-        `
+                        <figcaption class="remd_text">
+                            ${item.menuName}
+                        </figcaption>
+                    </figure>
+                `
+                li.setAttribute('data-menuId', item.menuId)
+                li.setAttribute('data-ele', 'menu')
+                li.classList.add('remd_menu')
+                ul.appendChild(li)
+            })
+        }
     })
 
-    let model = new Model({})
+    let model = new Model({
+        data: {
+            menus: []
+        },
+        fetchAll(){
+            let menuStorage = new AV.Query('Playlist')
+            return menuStorage.find().then((responseData)=>{
+                responseData.map((item)=>{
+                    this.data.menus.push({
+                        menuId: item.id,
+                        menuName: item.attributes.menuName,
+                        creator: item.attributes.creator,
+                        description: item.attributes.description,
+                        coverUrl: item.attributes.coverUrl
+                    })
+                })
+            })
+        }
+    })
 
     let controller = new Controller({
         view: view,
         model: model,
+        events: [
+            {ele: 'menu', type: 'click', fn: 'handleMenuClick'},
+        ],
         init(){
             this.view.init()
+            // 取所有歌单，生成index的歌单模块
+            this.model.fetchAll().then(()=>{
+                this.view.render(this.model.data)
+            })
+            this.bindEvents()
+        },
+        handleMenuClick(target){
+            // 点击歌单，打开页面，歌单的id在请求中
+            this.view.selectedId = target.getAttribute('data-menuId')
+            window.location.href = `/src/playlist.html/?menuId=${this.view.selectedId}`
         }
     })
     controller.init()
