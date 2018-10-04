@@ -39,7 +39,7 @@ ol.songsWrapper > li > .songLink > .songPlay{position: absolute;top: 50%;right: 
 
 /* *************************************************推荐音乐标签被点击******************************************************** */
 #page_remd{display: none;}
-#page_remd.active{display: block;}
+/* #page_remd.active{display: block;} */
 
 /* 推荐音乐标签被点击：公共样式 */
 .sectionTitle{position: relative;padding-left: 2.4vw;margin-bottom: 3.2vw;font-size: 4.53vw;}
@@ -80,5 +80,158 @@ ol.songsWrapper > li > .songLink > .songPlay{position: absolute;top: 50%;right: 
 #page_hot > ol > li.ahead > .songNumber{color: #d33a31;}
 
 /* *************************************************搜索标签被点击******************************************************** */
-#page_sch{display: none;}
+#page_sch{display: block;background-color: #fbfcfd;}
 #page_sch.active{display: block;}
+
+#page_sch > .sch_form{
+    width: 100%;
+    padding: 15px 10px;
+    position: relative;
+}
+#page_sch > .sch_form::after{
+    content: '';
+    display: block;
+    width: 200%;
+    height: 200%;
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    border-left: 0;
+    border-right: 0;
+    border-top: 1px solid rgba(0, 0, 0, .2);
+    border-bottom: 1px solid rgba(172, 26, 26, 0.1);
+    transform: scale(.5);
+    transform-origin: top left;
+}
+#page_sch > .sch_form > .sch_cover{
+    width: 100%;
+    height: 30px;
+    padding: 0 30px;
+    background: #ebecec;
+    border-radius: 30px;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+#page_sch > .sch_form > .sch_cover > .sch_input{
+    font-size: 14px;
+    line-height: 18px;
+    height: 100%;
+    width: 100%;
+    background: transparent;
+    color: #333;
+    border: 0;
+}
+#page_sch > .sch_form > .sch_cover > .sch_input:hover{
+    outline: none;
+}
+#page_sch > .sch_form > .sch_cover > svg.schIcon{
+    display: inline-block;
+    vertical-align: middle;
+    width: 17px;
+    height: 17px;
+    position: absolute;
+    top: 8px;
+    left: 6px;
+    fill: #c2bcbc;
+}
+#page_sch > .sch_form > .sch_cover > figure.sch_close{
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#page_sch > .sch_form > .sch_cover > figure.sch_close > svg.closeIcon{
+    display: inline-block;
+    vertical-align: middle;
+    width: 18px;
+    height: 18px;
+    fill: #c3c3c3;
+}
+
+.sch_view h3{
+    display: none;
+    font-size: 15px;
+    line-height: 50px;
+    height: 50px;
+    margin-left: 10px;
+    padding-right: 10px;
+    color: #507daf;
+    position: relative;
+}
+.sch_view h3.active{
+    display: block;
+}
+.sch_view h3::after{
+    content: '';
+    display: block;
+    width: 200%;
+    height: 200%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+    transform: scale(.5);
+    transform-origin: top left;
+}
+#page_sch  .sch_result{
+    display: none;
+    width: 100%;
+}
+#page_sch  .sch_result.active{
+    display: block;
+}
+#page_sch  .sch_result > .sch_li{
+    width: 100%;
+    height: 45px;
+    padding-left: 10px;
+}
+#page_sch  .sch_result > .sch_li > .sch_link{
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 15px;
+    line-height: 45px;
+    padding-left: 22px;
+    padding-right: 10px;
+    width: 100%;
+    color: #333;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: normal;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+
+    position: relative;
+}
+#page_sch .sch_result > .sch_li > .sch_link::after{
+    content: '';
+    display: block;
+    width: 200%;
+    height: 200%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+    transform: scale(.5);
+    transform-origin: top left;
+}
+#page_sch .sch_result > .sch_li > .sch_link > svg{
+    width: 17px;
+    height: 17px;
+    position: absolute;
+    top: 50%;
+    left: -1px;
+    transform: translateY(-50%);
+    fill: black;
+}

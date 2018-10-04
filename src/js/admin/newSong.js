@@ -148,7 +148,7 @@
             this.view.data.fileType = target.getAttribute('data-ele')
             let file = target.files[0]
             let name = file.name
-            let putExtra = {fname: "",params: {},mimeType: [] || null}
+            let putExtra = {fname: "",params: {},mimeType: null}
             let config = {useCdnDomain: true,region: qiniu.region.z2}
             axios.get('http://localhost:8888/uptoken').then((responseData)=>{
                 let token  = responseData.data.token
@@ -158,12 +158,14 @@
                         let size = `${Math.ceil(responseData.total.size/1000)}kb`
                         let percent = `${Math.floor(responseData.total.percent)}%`
                         Object.assign(this.view.data, {loaded:loaded, size:size, percent:percent})
+                        console.log(`正在上传：${percent}`)
                         // 此处responseData数据是页面展示所用的数据，存在view的data中   
                     },
-                    error: ()=>{
-                        alert('上传出错，请刷新后重试！')
+                    error: (err)=>{
+                        console.log(err)
                     },
                     complete: (responseData)=>{
+                        console.log('上传完成')
                         let name = responseData.key
                         let url = `http://pfap49o5g.bkt.clouddn.com/${encodeURIComponent(responseData.key)}`
                         // 此处responseData数据是数据库返回的数据，存在model的data中

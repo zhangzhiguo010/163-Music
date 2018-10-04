@@ -1,6 +1,9 @@
 {
     let view = new View({
         el: 'section.fshSongs',
+        data: {
+            selectedId: ''
+        },
         template: `
             <h2 class="sectionTitle">最新音乐</h2>
             <ol class="songsWrapper"></ol>
@@ -11,7 +14,7 @@
             data.songs.slice(0,10).map((item)=>{
                 let li = document.createElement('li')
                 li.innerHTML = `
-                    <a href="" class="songLink">
+                    <div class="songLink">
                         <h3 class="songName">${item.songName}</h3>
                         <p class="singer">
                             <svg class="icon songSq" aria-hidden="true">
@@ -22,9 +25,10 @@
                         <svg class="icon songPlay" aria-hidden="true">
                             <use xlink:href="#icon-bofang"></use>
                         </svg>
-                    </a>
+                    </div>
                 `,
                 li.setAttribute('data-id', item.id)
+                li.setAttribute('data-ele', 'songClick')
                 ul.appendChild(li)
             })
         }
@@ -53,11 +57,19 @@
     let controller = new Controller({
         view: view,
         model: model,
+        events: [
+            {ele: 'songClick', type: 'click', fn: 'handleSongClick'}
+        ],
         init(){
             this.view.init()
             this.model.fetchAll().then(()=>{
                 this.view.render(this.model.data)
             })
+            this.bindEvents()
+        },
+        handleSongClick(target){
+            this.view.data.selectedId = target.getAttribute('data-id')
+            window.location.href = `/src/song.html/?songId=${this.view.data.selectedId}`
         }
     })
     controller.init()

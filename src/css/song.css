@@ -7,36 +7,45 @@ h1, h2, h3, h4, h5, h6{font-weight: normal}
 .icon {width: 1em; height: 1em;vertical-align: -0.15em;fill: currentColor;overflow: hidden;}
 
 body{
-    font: 14px/1.5 Helvetica,sans-serif;
+    font: 3.73vw/1.5 Helvetica,sans-serif;
+}
+
+@keyframes circle{
+    0% {
+        transform: rotate(0)
+    }
+    100% {
+        transform: rotate(360deg)
+    }
 }
 .wrapper{
-    position: relative;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
     z-index: 0;
+}
+.wrapper > audio{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 5;
+    top: 0;
+    left: 0;
 }
 .wrapper > .wrapper_bg{
     z-index: -1;
     width: 100%;
     height: 100%;
     position: fixed;
-    top: -30px;
-    bottom: -30px;
-    left: -30px;
-    right: -30px;
-    background: #ffffff url(../img/song/xx_cover.jpg) no-repeat center;
-    filter: blur(5px);
-    background-size: auto 100%;
+    top: -8vw;
+    bottom: -8vw;
+    left: -8vw;
+    right: -8vw;
+    filter: blur(1.7vw) brightness(.5);
     transform: scale(1.5);
     transform-origin: center top;
-}
-.wrapper_bg::after{
-    content: '';
-    display: block;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: rgba(0, 0, 0, .5);
 }
 /* ************************* 头部模块 *********************************/
 header{
@@ -47,16 +56,16 @@ header > .logo{
     display: inline-block;
     vertical-align: middle;
     line-height: 0;
-    height: 17px;
+    height: 4.53vw;
     position: absolute;
-    top: 12px;
-    left: 10px;
+    top: 3.2vw;
+    left: 2.66vw;
 }
 header > .logo > svg{
     display: inline-block;
     vertical-align: middle;
-    width: 92px;
-    height: 17px;
+    width: 24.5vw;
+    height: 4.53vw;
     background-position: 0 0;
     background-size: contain;
     background-repeat: no-repeat;
@@ -64,24 +73,21 @@ header > .logo > svg{
 
 /* ************************* disc黑胶模块 *********************************/
 .disc{
-    padding-top: 70px;
+    padding-top: 18.66vw;
 }
 .disc > .disc_needle{
-    width: 84px;
-    height: 122px;
+    width: 22.4vw;
+    height: 32.53vw;
     position: absolute;
     top: 0;
-    left: calc(50% + 5px);
+    left: calc(50% + 1.33vw);
     z-index: 3;
     background: url(../img/song/disc_needle_ip6.png) no-repeat center;
     background-size: contain;
-    /* transform: scale(0.5); */
-    /* transform-origin: center; */
-
 }
 .disc > .disc_bg{
-    width: 248px;
-    height: 248px;
+    width: 66.13vw;
+    height: 66.13vw;
     background: url(../img/song/disc_bg.png) no-repeat center;
     background-size: contain;
     border-radius: 50%;
@@ -90,10 +96,23 @@ header > .logo > svg{
     position: relative;
     z-index: 0;
 }
+.disc > .disc_bg > .disc_light{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    background: transparent url(../img/song/disc_light.png) no-repeat center;
+    background-size: contain;  
+    animation: circle 20s infinite linear;
+    animation-play-state: paused;
+}
+.disc > .disc_bg > .disc_light.play{
+    animation-play-state: running;
+}
 
-.disc > .disc_bg > .disc_default{
-    width: 150px;
-    height: 150px;
+.disc > .disc_bg > .disc_light > .disc_default{
+    width: 0.4vw;
+    height: 0.4vw;
     border-radius: 50%;
     overflow: hidden;
     position: absolute;
@@ -103,33 +122,34 @@ header > .logo > svg{
     background: url(../img/song/disc_default.png) no-repeat center;
     background-size: contain;
 }
-.disc > .disc_bg > .disc_default > .disc_cover{
+.disc > .disc_bg > .disc_light > .disc_default > .disc_cover{
     width: 100%;
     height: 100%;
-    background: url(../img/song/xx_cover.jpg) no-repeat center;
-    background-size: contain;
     position: relative;
 }
-.disc > .disc_bg > .disc_default > .disc_cover > .disc_pause{
-    width: 50px;
-    height: 50px;
+.disc > .disc_bg > .disc_pause{
+    width: 13.3vw;
+    height: 13.3vw;
     position: absolute;
+    z-index: 999;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: url(../img/song/disc_pause.png) no-repeat center;
+}
+.disc > .disc_bg > .disc_pause.pause{
+    background: transparent url(../img/song/disc_pause.png) no-repeat center;
     background-size: contain;
 }
 
 
 /* ************************* 歌曲信息模块 *********************************/
 .songContent{
-    margin-top: 25px;
-    padding: 0 35px;
+    margin-top: 6.67vw;
+    padding: 0 9.33vw;
 }
 .songContent > h2{
     vertical-align: middle;
-    font-size: 15px;
+    font-size: 4vw;
     line-height: 1.1;   
     text-align: center; 
     color: #fefefe;
@@ -144,29 +164,27 @@ header > .logo > svg{
     margin: 0 4px;
 }
 .songContent > h2 > .singer{
-    font-size: 13px;
+    font-size: 3.46vw;
     color: hsla(0,0%,100%,.6);
 }
-.songContent > .lyrics{
-    font-size: 13px;
-    line-height: 1.5;
-    height: 88px;
+.songContent > .lyricsWindow{
+    height: 23.46vw;
     overflow: hidden;
-    margin: 14px auto 0;
+    margin: 3.73vw auto 0;
 }
-.songContent > .lyrics > p{
-    padding-bottom: 8px;
+.songContent > .lyricsWindow > .lyricsWrapper{
+    font-size: 3.46vw;
+    line-height: 1.5;
+}
+.songContent > .lyricsWindow > .lyricsWrapper > p{
+    padding-bottom: 2.13vw;
     text-align: center;
     color: hsla(0,0%,100%,.6);
+    height: 8vw;
 }
-.songContent > .lyrics > p.active{
-    color: ;
-    font-size: ;
+.songContent > .lyricsWindow > .lyricsWrapper > p.active{
+    color: white;
 }
-
-
-
-
 
 /* ************************ 底部App ********************************** */
 .controlApp{
@@ -175,7 +193,7 @@ header > .logo > svg{
     bottom: 0;
     z-index: 2;
     width: 100%;
-    padding: 7px 10px;
+    padding: 1.86vw 2.66vw;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -184,14 +202,14 @@ header > .logo > svg{
 .controlApp > a.app{
     display: inline-block;
     vertical-align: middle;
-    font-size: 18px;
-    line-height: 40px;
-    width: 173px;
-    height: 40px;
+    font-size: 4.8vw;
+    line-height: 10.67vw;
+    width: 46.1vw;
+    height: 10.67vw;
     border: 1px solid #d33a31;
     text-align: center;
-    padding: 0 6px;
-    border-radius: 20px;
+    padding: 0 1.6vw;
+    border-radius: 5.33vw;
 }
 .controlApp > a.openApp{
     color: #d33a31;
@@ -201,35 +219,33 @@ header > .logo > svg{
     background: #d33a31;
 }
 
-
-
-
-
+/* 媒体查询 */
 @media screen and (min-width: 360px){
     .disc > .disc_needle{
         width: 96px;
         height: 137px;
         left: calc(50% - 16px);
-        background: url(../img/song/disc_needle_ip6.png) no-repeat center;
+        background: transparent url(../img/song/disc_needle_ip6.png) no-repeat center;
         background-size: contain;
     }
     .disc > .disc_bg{
         width: 296px;
         height: 296px;
-    }
-    .disc > .disc_bg{
-        background: url(../img/song/disc_bg_ip6.png) no-repeat center;
+        background: transparent url(../img/song/disc_bg_ip6.png) no-repeat center;
         background-size: contain;
     }
-    .disc > .disc_bg > .disc_default{
+    .disc > .disc_bg > .disc_light{
+        background: transparent url(../img/song/disc_light-ip6.png) no-repeat center;
+        background-size: contain;
+    }
+    .disc > .disc_bg > .disc_light > .disc_default{
         width: 184px;
         height: 184px;
     }
-    .disc > .disc_bg > .disc_default > .disc_cover > .disc_pause{
+    .disc > .disc_bg > .disc_pause{
         width: 56px;
         height: 56px;
     }
-
 }
 @media screen and (min-width: 360px){
     .songContent > h2{
@@ -244,7 +260,7 @@ header > .logo > svg{
     .songContent > h2 > .singer{
         font-size: 16px;
     }
-    .songContent > .lyrics{
+    .songContent > .lyricsWindow > .lyricsWrapper{
         font-size: 16px;
     }
 }

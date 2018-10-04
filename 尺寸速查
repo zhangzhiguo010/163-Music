@@ -1,6 +1,8 @@
 2px     0.53vw
 5px     1.33vw
 6px     1.6vw
+7px     1.86vw
+8px     
 9px     2.4vw
 10px    2.66vw
 12px    3.20vw
@@ -9,14 +11,17 @@
 15px    4vw
 16px    4.27vw
 17px    4.53vw
+18px    4.8vw
 19px    5.06vw
 20px    5.33vw
 22px    5.86vw
 25px    6.67vw
 30px    8vw
+35px    9.33vw
 38px    10.13vw
 40px    10.67vw
 47px    12.53vw
+50px    13.3vw
 64px    17.06vw
 65px    17.33vw
 125px   33.33vw
