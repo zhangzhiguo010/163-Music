@@ -1,0 +1,423 @@
+/* ************************************** 样式初始化 ******************************************* */
+*{margin: 0; padding: 0;}
+*{box-sizing: border-box;}
+*::after, *::before{box-sizing: border-box;}
+ol, ul{list-style: none;}
+a{text-decoration: none; color: inherit;}
+h1, h2, h3, h4, h5, h6{font-weight: normal}
+.icon {width: 1em; height: 1em;vertical-align: -0.15em;fill: currentColor;overflow: hidden;}
+
+/* ************************************** index页面公共样式 ****************************************** */
+body{font: 3.7vw/1.5 Helvetica,sans-serif;position: relative;}
+ol.songsWrapper{display: flex;flex-direction: column;align-items: flex-start;}
+ol.songsWrapper > li{width: 100%;display: flex;justify-content: space-between;align-items: center;padding-left: 2.66vw;}
+ol.songsWrapper > li > .songLink{position: relative;flex-grow: 1;display: inline-block;vertical-align: top;padding: 1.6vw 0;color: #333;}
+ol.songsWrapper > li > .songLink::after{content: '';position: absolute;bottom: 0;left: 0;width: 100%;height: 1px;transform: scaleY(.18);background: #c0bebe;}
+ol.songsWrapper > li > .songLink > .songName{font-size: 4.53vw;}
+ol.songsWrapper > li > .songLink > .singer{font-size: 3.2vw;color: #888;}
+ol.songsWrapper > li > .songLink > .singer > .songSq{display: inline-block;vertical-align: middle;width: 13px;height: 15px;line-height: 15px;fill: #ca5407;}
+ol.songsWrapper > li > .songLink > .songPlay{position: absolute;top: 50%;right: 2.66vw;transform: translateY(-50%);width: 5.86vw;height: 5.86vw;fill: #aaaaaa;}
+
+/* ********************************************* index页面的头部 ****************************************** */
+/* ********************************************* index页面的导航条 ************************************** */
+.wrapper{
+    width: 100%;
+}
+
+.header{
+    width: 100%;
+    height: 17.06vw;
+}
+.header-inner{
+    width: 100%;
+    height: 17.06vw;
+    padding: 0 2.66vw;
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    background: #d43c33;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.header-inner > svg{
+    display: inline-block;
+    vertical-align: middle;
+    width: 37.86vw;
+    height: 6.67vw;
+    background: #d43c33;
+}
+.header-inner > a{
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 4vw;
+    line-height: 8vw;
+    height: 8vw;
+    padding: 0 2.66vw;
+    position: relative;
+    color: #fff;
+}
+.header-inner > a::after{
+    content: '';
+    display: block;
+    width: 200%;
+    height: 200%;
+    border: 1px solid #e4e0e0;
+    transform: scale(.5);
+    transform-origin: top left;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 37.5%/100%;
+}
+
+nav{
+    width: 100;
+    height: 10.67vw;
+    position: relative;
+    background: #fff;
+}
+nav > .nav-inner{
+    width: 100%;
+    height: 10.67vw;
+    position: fixed;
+    z-index: 99;
+    top: 17.06vw;
+    left: 0;
+    background: #fff;
+}
+nav > .nav-inner::after{
+    content: '';
+    display: block;
+    width: 200%;
+    height: 200%;
+    border-bottom: 1px solid rgba(0, 0, 0, .2);
+    transform: scale(.5);
+    transform-origin: top left;
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+}
+nav > .nav-inner > ul{
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+nav > .nav-inner > ul > li{
+    line-height: 100%;
+    height: 100%;
+    width: 33.3%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+nav > .nav-inner > ul > li.tab > .tabContent{
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 4vw;
+    line-height: 10.67vw;
+    height: 10.67vw;
+    padding: 1px 1.33vw 0;
+    position: relative;
+}
+nav > .nav-inner > ul > li.tab > .tabContent::after{
+    content: '';
+    display: none;
+    height: 3.5px;
+    width: 100%;
+    transform: scaleY(.5);
+    transform-origin: top left;
+    position: absolute;
+    bottom: -0.53vw;
+    left: 0;
+    background: #d33a31;
+}
+nav > .nav-inner > ul > li.active .tabContent{
+    color: #d33a31;
+}
+nav > .nav-inner > ul > li.active .tabContent::after{
+    display: block;
+}
+
+/* *************************************************推荐音乐标签被点击******************************************************** */
+#page_remd{display: none;}
+#page_remd.active{display: block;}
+
+/* 推荐音乐标签被点击：公共样式 */
+.sectionTitle{position: relative;padding-left: 2.4vw;margin-bottom: 3.2vw;font-size: 4.53vw;}
+.sectionTitle::after{content: '';position: absolute;top: 50%;left: 0;transform: translateY(-50%);width: 0.53vw;height: 4.27vw;background: #d33a31;}
+
+/* 推荐音乐标签被点击：推荐歌单 */
+.remdSongs{padding: 4.5vw 0 5.6vw;}
+.remdSongs > ul{display: flex;flex-wrap: wrap;justify-content: space-between;}
+.remdSongs > ul > li.remd_menu{flex-basis: calc(33.33vw - 2px);margin-bottom: 4.27vw;}
+.remdSongs > ul > li.remd_menu > .remd_cover{}
+.remdSongs > ul > li.remd_menu > .remd_cover > .remd_imgWrapper{height: 32.77vw;position: relative;}
+.remdSongs > ul > li.remd_menu > .remd_cover > .remd_imgWrapper > img{width: 100%;height: 100%;}
+.remdSongs > ul > li.remd_menu > .remd_cover > .remd_imgWrapper > .remd_praise{position: absolute;top: 0.53vw;right: 1.33vw;z-index: 3;padding-left: 3.466vw;font-size: 3.2vw;color: #fff;}
+.remdSongs > ul > li.remd_menu > .remd_cover > .remd_imgWrapper > .remd_praise > .remd_erjiSvg{position: absolute;top: 50%;left: -0.53vw;transform: translateY(-50%);width: 3.47vw;height: 3.73vw;}
+.remdSongs > ul > li.remd_menu > .remd_cover > .remd_text{display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;line-height: 1.2;overflow: hidden;padding: 1.6vw 2px 0 1.6vw;font-size: 3.47vw;}
+
+/* 推荐音乐标签被点击：最新音乐 */
+.fshSongs{min-height: 5.33vw;}
+.fshSongs > figure.loading{
+    display: block;
+    text-align: center;
+    
+}
+.fshSongs > figure.loading.active{
+    display: none;
+}
+/* 推荐音乐标签被点击：底部广告区域 */
+.art{
+    padding: 17.33vw 0 4.53vw;
+    background: url(/images/art_background.png) no-repeat center 1.33vw;
+    background-size: contain;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.art > .art_svgLogo{
+    width: 61.33vw;
+    height: 12.53vw;
+    margin-top: 1px;
+}
+.art > .art_openApp{
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 10.23vw;
+    padding: 0 12.53vw;
+    border: 1px solid #d33a31;
+    border-radius: 5.06vw;
+    font-size: 4.27vw;
+    color: #d33a31;
+    margin: 3.47vw 0 1.33vw;
+}
+.art > .art_copyright{
+    line-height: 4.27vw;
+    font-size: 3.2vw;
+    color: #888;
+    transform: scale(.75);
+}
+
+
+/* *************************************************热歌榜标签被点击******************************************************** */
+#page_hot{display: none;}
+#page_hot.active{display: block;}
+.globalNav > .globalNav_inner::after{border: 0;}
+/* 热歌榜标签被点击：头部广告区域 */
+#page_hot > .hotTitle{
+    padding: 6.67vw 0 3.73vw 5.33vw;
+    background: orange url(/images/hotTitle.jpg) no-repeat center;
+    background-size: contain;
+    color: #fff;
+    position: relative;
+}
+#page_hot > .hotTitle::after{
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.2);
+}
+#page_hot > .hotTitle > .content{
+    position: relative;
+    z-index: 1;
+}
+#page_hot > .hotTitle > .content > .hotLogo{
+    width: 37.86vw;
+    height: 17.86vw;
+    background: url(/images/hotTitleContent.png) no-repeat center;
+    background-size: contain;
+}
+#page_hot > .hotTitle > .content >.updateDate{
+    margin: 2.66vw 0 3.2vw;
+    font-size: 3.2vw;
+    transform: scale(.91);
+    transform-origin: top left;
+    color: hsla(0,0%,100%,.8);
+}
+/* 热歌榜标签被点击：音乐列表区域 */
+#page_hot > ol > li > .songNumber{font-size: 4.53vw;margin-right: 2.4vw;}
+#page_hot > ol > li.ahead > .songNumber{color: #d33a31;}
+/* *************************************************搜索标签被点击******************************************************** */
+#page_sch{display: none;background-color: #fbfcfd;}
+#page_sch.active{display: block;}
+
+#page_sch > .sch_form{
+    width: 100%;
+    padding: 4vw 2.66vw;
+    position: relative;
+}
+#page_sch > .sch_form::after{
+    content: '';
+    display: block;
+    width: 200%;
+    height: 200%;
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    border-bottom: 1px solid rgba(172, 26, 26, 0.1);
+    transform: scale(.5);
+    transform-origin: top left;
+}
+#page_sch > .sch_form > .sch_cover{
+    width: 100%;
+    height: 8vw;
+    padding: 0 8vw;
+    background: #ebecec;
+    border-radius: 8vw;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+#page_sch > .sch_form > .sch_cover > .sch_input{
+    font-size: 3.73vw;
+    line-height: 4.8vw;
+    height: 100%;
+    width: 100%;
+    background: transparent;
+    color: #333;
+    border: 0;
+    position: relative;
+    z-index: 1;
+    outline: none;
+}
+#page_sch > .sch_form > .sch_cover > label{
+    height: 100%;
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: 8vw; 
+    color: #c9c9c9;
+    display: none;
+    align-items: center;
+}
+#page_sch > .sch_form > .sch_cover > label.active{
+    display: flex;
+}
+#page_sch > .sch_form > .sch_cover > svg.schIcon{
+    display: inline-block;
+    vertical-align: middle;
+    width: 3.73vw;
+    height: 3.73vw;
+    position: absolute;
+    z-index: 3;
+    top: 2.13vw;
+    left: 1.86vw;
+    fill: #bcbcbc;
+}
+#page_sch > .sch_form > .sch_cover > figure.sch_close{
+    width: 8vw;
+    height: 8vw;
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+#page_sch > .sch_form > .sch_cover > figure.sch_close.active{
+    display: flex;
+}
+#page_sch > .sch_form > .sch_cover > figure.sch_close > svg.closeIcon{
+    display: inline-block;
+    vertical-align: middle;
+    width: 4.27vw;
+    height: 4.27vw;
+    fill: #bcbcbc;
+}
+.sch_view h3{
+    display: block;
+    font-size: 4vw;
+    line-height: 13.3vw;
+    height: 13.3vw;
+    margin-left: 2.66vw;
+    padding-right: 2.66vw;
+    color: #507daf;
+    position: relative;
+}
+.sch_view h3::after{
+    content: '';
+    display: block;
+    width: 200%;
+    height: 200%;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+    transform: scale(.5);
+    transform-origin: top left;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+#page_sch  .sch_result{
+    display: block;
+    width: 100%;
+}
+#page_sch  .sch_result > .sch_li{
+    width: 100%;
+    height: 12vw;
+    padding-left: 8.53vw;
+    position: relative;
+}
+#page_sch  .sch_result > .sch_li > span{
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 4vw;
+    line-height: 12vw;
+    height: 12vw;
+    width: 100%;
+    padding-right: 2.66vw;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: normal;
+    position: relative;
+}
+#page_sch  .sch_result > .sch_li > span::after{
+    content: '';
+    display: block;
+    width: 200%;
+    height: 200%;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+    transform: scale(.5);
+    transform-origin: top left;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+#page_sch  .sch_result > .sch_li > svg{
+    display: inline-block;
+    vertical-align: middle;
+    height: 4vw;
+    width: 4vw;
+    position: absolute;
+    top: 50%;
+    left: 2.4vw;
+    margin-top: -1px;
+    transform: translateY(-50%);
+    fill: #939494;
+}
+.sch_view{
+    display: none;
+}
+.sch_view.active{
+    display: block;
+}
+.click_view{
+    display: none;
+}
+.click_view.active{
+    display: block;
+}

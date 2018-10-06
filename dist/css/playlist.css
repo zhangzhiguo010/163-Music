@@ -1,0 +1,279 @@
+/* ************************************** 样式初始化 ******************************************* */
+*{margin: 0; padding: 0;}
+*{box-sizing: border-box;}
+*::after, *::before{box-sizing: border-box;}
+ol, ul{list-style: none;}
+a{text-decoration: none; color: inherit;}
+h1, h2, h3, h4, h5, h6{font-weight: normal}
+.icon {width: 1em; height: 1em;vertical-align: -0.15em;fill: currentColor;overflow: hidden;}
+
+/* ************************公共样式************************************ */
+body{font: 3.73vw/1.5 Helvetica,sans-serif;}
+.wrapper{
+    background: #f8f8f8;
+}
+
+/* ************************ header头部 ********************************** */
+.header{
+    position: relative;
+    padding: 8vw 2.66vw 8vw 4vw;
+    overflow: hidden;
+}
+.header > .hd_bg{
+    position: absolute;
+    z-index: 1;
+    top: -8vw;
+    bottom: -8vw;
+    left: -8vw;
+    right: -8vw;
+    background: no-repeat center;
+    background-size: cover;
+    filter: blur(5.33vw);
+}
+.header > .hd_bg::after{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .25);
+}
+.header > .hd_content{
+    position: relative;
+    z-index: 2;
+    display: flex;
+}
+.header > .hd_content > .hd_lf{
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    width: 33.6vw;
+    height: 33.6vw;
+}
+.header > .hd_content > .hd_lf > img{
+    vertical-align: middle;
+    width: 100%;
+    height: 100%;
+}
+.header > .hd_content > .hd_lf > .hd_hint{
+    position: absolute;
+    top: 2.66vw;
+    left: 0;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 2.4vw;
+    line-height: 4.53vw;
+    height: 4.53vw;
+    padding: 0 2.13vw;
+    border-radius: 0 4.53vw 4.53vw 0;
+    color: #fff;
+    background: rgba(217, 48, 48, 0.8);
+}
+.header > .hd_content > .hd_rt{
+    width: 1%;
+    flex: 1 1 auto;
+    margin-left: 4.27vw;
+}
+.header > .hd_content > .hd_rt > .menuName{
+    padding-top: 1px;
+    font-size: 4.53vw;
+    line-height: 1.3;
+    height: 11.73vw;
+    padding-top: 1px;
+    color: #fefefe;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.header > .hd_content > .hd_rt > .creator{
+    margin-top: 5.33vw;
+    display: flex;
+    align-items: center;
+    color: #fefefe;
+}
+.header > .hd_content > .hd_rt > .creator > svg{
+    display: inline-block;
+    vertical-align: middle;
+    width: 8vw;
+    height: 8vw;
+    margin-right: 0.53vw;
+    border-radius: 50%;
+    overflow: hidden;
+}
+.header > .hd_content > .hd_rt > .creator > .creatorName{
+    color: #c8c4c4;
+}
+
+
+/* ************************ 歌单详情 ********************************** */
+.intro{
+    margin-top: 2.66vw;
+    padding: 0 2.66vw 0 4vw;
+    font-size: 3.73vw;
+    line-height: 5.06vw;
+    color: #666;
+}
+.intro > .intro_tags{
+    line-height: 5.33vw;
+    height: 5.33vw;
+    margin-bottom: 2.66vw;
+    display: flex;
+    
+}
+.intro > .intro_tags > span{
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 3.2vw;
+    padding: 1px 2.13vw;
+    margin-right: 2.66vw;
+}
+.intro > .intro_tags > span::after{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 200%;
+    box-sizing: content-box;
+    padding: 0 0 0.53vw 0;
+    border: 1px solid rgba(0, 0, 0, .1);
+    border-radius: 999px;
+    transform: scale(.5);
+    transform-origin: top left;
+}
+.intro > .intro_intro{
+    margin-bottom: 4.8vw;
+    line-height: 5.06vw;
+}
+.intro > .intro_intro p{
+    margin-top: 3.2vw;
+    width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+
+/* ************************ 歌曲列表 ********************************** */
+.menu_songList{
+    margin-bottom: 16.67vw;
+}
+.menu_songList > h3{
+    font-size: 3.2vw;
+    line-height: 6.13vw;
+    padding: 0 2.66vw;
+    color: #666;
+    background-color: #eeeff0;
+}
+
+ol.songsWrapper > li > .songNumber{
+    width: 10.67vw;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 4.53vw;
+}
+ol.songsWrapper > li.ahead > .songNumber{color: #d33a31;}
+ol.songsWrapper{display: flex;flex-direction: column;align-items: flex-start;}
+ol.songsWrapper > li{width: 100%;display: flex;justify-content: space-between;align-items: center;}
+ol.songsWrapper > li > .songLink{position: relative;flex-grow: 1;display: inline-block;vertical-align: top;padding: 1.6vw 0;color: #333;}
+ol.songsWrapper > li > .songLink::after{content: '';position: absolute;bottom: 0;left: 0;width: 100%;height: 1px;transform: scaleY(.18);background: #c0bebe;}
+ol.songsWrapper > li > .songLink > .songName{font-size: 4.53vw;}
+ol.songsWrapper > li > .songLink > .singer{font-size: 3.2vw;color: #888;}
+ol.songsWrapper > li > .songLink > .singer > .songSq{display: inline-block;vertical-align: middle;width: 3.47vw;height: 4vw;line-height: 4vw;fill: #ca5407;}
+ol.songsWrapper > li > .songLink > .songPlay{position: absolute;top: 50%;right: 2.66vw;transform: translateY(-50%);width: 5.86vw;height: 5.86vw;fill: #bfbfbf;}
+
+/* ************************ 底部App ********************************** */
+.controlApp{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 2;
+    width: 100%;
+    padding: 1.86vw 2.66vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+}
+.controlApp > a.app{
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 4.8vw;
+    line-height: 10.67vw;
+    width: 46.13vw;
+    height: 10.67vw;
+    border: 1px solid #d33a31;
+    text-align: center;
+    padding: 0 1.6vw;
+    border-radius: 5.33vw;
+}
+.controlApp > a.openApp{
+    color: #d33a31;
+    background: #fff;
+}
+.controlApp > a.downloadApp{
+    color: #fff;
+    background: #d33a31;
+}
+
+
+/*********************** 歌曲列表展示 ***************************/
+.songList{
+    display: none;
+}
+.songList.active{
+    display: block;
+}
+
+/* *********************** 歌单列表展示 ******************************************* */
+.menuList{
+    display: none;
+}
+.menuList.active{
+    display: block;
+}
+
+/* *********************** 歌单列表：查看歌曲 ******************************************* */
+.menuCheckSong{
+    display: none;
+}
+.menuCheckSong.active{
+    display: block;
+}
+
+/* *********************** 歌单列表：添加歌曲 ******************************************* */
+.menuAddSong{
+    display: none;
+}
+.menuAddSong.active{
+    display: block;
+}
+
+/* *********************** 新建歌曲 ******************************************* */
+.newAndEdit{
+    display: none;
+}
+.newAndEdit.active{
+    display: block;
+}
+
+
+
+/* *********************** 新建歌单 ******************************************* */
+.newMenu{
+    display: none;
+}
+.newMenu.active{
+    display: block;
+}
+
+#songMenuCover{
+    width: 100%;
+}
