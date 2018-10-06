@@ -67,7 +67,7 @@
         },
         clickSong(target){
             let songId = target.getAttribute('data-songId')  
-            window.location.href = `/src/song.html/?songId=${songId}`
+            window.location.href = `/src/song.html?songId=${songId}`
         },
         listenClickTab(data){
             this.view.toggleShowOrHidden('page_hot', data.tabName, '#page_hot')

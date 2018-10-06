@@ -56,7 +56,7 @@
         },
         clickSong(target){
             this.view.data.selectedId = target.getAttribute('data-songId')
-            window.location.href = `/src/song.html/?songId=${this.view.data.selectedId}`
+            window.location.href = `/dist/song.html?songId=${this.view.data.selectedId}`
         }
         
     })

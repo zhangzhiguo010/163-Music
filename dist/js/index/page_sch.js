@@ -163,7 +163,7 @@
         },
         clickSong(target){
             let songId = target.getAttribute('data-songId')  
-            window.location.href = `/src/song.html/?songId=${songId}`
+            window.location.href = `/dist/song.html?songId=${songId}`
         }
     })
 

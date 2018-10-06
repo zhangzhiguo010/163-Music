@@ -56,7 +56,8 @@
         clickMenu(target){
             // 点击歌单，打开页面，歌单的id在请求中
             this.view.selectedId = target.getAttribute('data-menuId')
-            window.location.href = `/src/playlist.html/?menuId=${this.view.selectedId}`
+            console.log(this.view.selectedId)
+            window.location.href = `/dist/playlist.html?menuId=${this.view.selectedId}`
         }
     })
     controller.init()

@@ -59,7 +59,7 @@
         },
         handleSongClick(target){
             this.view.data.selectedId = target.getAttribute('data-id')
-            window.location.href = `/src/song.html/?songId=${this.view.data.selectedId}`
+            window.location.href = `/dist/song.html?songId=${this.view.data.selectedId}`
         }
     })
     controller.init()
