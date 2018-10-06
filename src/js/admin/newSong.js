@@ -162,10 +162,10 @@
                         // 此处responseData数据是页面展示所用的数据，存在view的data中   
                     },
                     error: (err)=>{
-                        console.log(err)
+                        alert('err')
                     },
                     complete: (responseData)=>{
-                        console.log('上传完成')
+                        alert('上传完成')
                         let name = responseData.key
                         let url = `http://pfap49o5g.bkt.clouddn.com/${encodeURIComponent(responseData.key)}`
                         // 此处responseData数据是数据库返回的数据，存在model的data中

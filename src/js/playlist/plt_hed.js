@@ -1,5 +1,5 @@
 {
-    let view = new View2({
+    let view = new View({
         el: '.menu_details',
         template: `
             <section class="header">
@@ -42,22 +42,19 @@
             this.o_el.innerHTML = newTemplate
         }
     })
-    let model = new Model2({
+    let model = new Model({
         data: {}
     })
-    let controller = new Controller2({
+    let controller = new Controller({
         view: view,
         model: model,
-        eventHub: [
-            {type: 'uploadMenu', fn: 'listenUploadMenu'}
-        ],
         init(){
             this.view.o_el = document.querySelector(this.view.el)
-            this.bindEventHub()
-        },
-        listenUploadMenu(obj){
-            this.model.data = obj.menuData
-            this.view.render(this.model.data)
+            this.getUrlSearch('menuId').then((menuId)=>{
+                this.model.fetch('Playlist', menuId).then(()=>{
+                    this.view.render(this.model.data)
+                })
+            })
         }
     })
 

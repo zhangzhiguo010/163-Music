@@ -6,11 +6,13 @@
         },
         template: `
             <h2 class="sectionTitle">最新音乐</h2>
+            <figure class="loading"><img src="./img/index/index_load.gif" alt="下载动画"></figure>
             <ol class="songsWrapper"></ol>
         `,
         render(data){
             this.o_el.innerHTML = this.template
             let ul = this.o_el.querySelector('ol[class=songsWrapper]')
+            let loading = this.o_el.querySelector('figure')
             data.songs.slice(0,10).map((item)=>{
                 let li = document.createElement('li')
                 li.innerHTML = `
@@ -31,6 +33,7 @@
                 li.setAttribute('data-ele', 'songClick')
                 ul.appendChild(li)
             })
+            loading.classList.add('active')
         }
     })
 
@@ -38,20 +41,7 @@
         resourceName: 'Song',
         data: {
             songs: []
-        },
-        fetchAll(){
-            songStorage = new AV.Query('Song')
-            return songStorage.find().then((responseData)=>{
-                this.data.songs = responseData.map((item)=>{
-                    return {
-                        id: item.id,
-                        songName: item.attributes.songName,
-                        singer: item.attributes.singer
-                    }
-                })
-            })
         }
-
     })
 
     let controller = new Controller({
@@ -62,7 +52,7 @@
         ],
         init(){
             this.view.init()
-            this.model.fetchAll().then(()=>{
+            this.model.fetchAll('Song', 'songs').then(()=>{
                 this.view.render(this.model.data)
             })
             this.bindEvents()

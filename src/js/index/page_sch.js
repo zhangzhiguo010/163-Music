@@ -1,14 +1,18 @@
 {
     let view = new View({
         el: 'main > #page_sch',
+        data: {
+            song: {}
+        },
         template: `
             <form class="sch_form">
                 <div class="sch_cover">
-                    <input type="text" class="sch_input" data-ele="input">
+                    <input type="text" class="sch_input" data-ele="txt" autofocus>
+                    <label>搜索歌曲、歌手、专辑</label>
                     <svg class="icon schIcon" aria-hidden="true">
                         <use xlink:href="#icon-sousuo"></use>
                     </svg>
-                    <figure class="sch_close">
+                    <figure class="sch_close" data-ele="close">
                         <svg class="icon closeIcon" aria-hidden="true">
                             <use xlink:href="#icon-shanchu"></use>
                         </svg>
@@ -19,33 +23,83 @@
                 <h3></h3>
                 <ul class="sch_result"></ul>
             </section>
+            <section class="click_view">
+                <ol class="songsWrapper"></ol>
+            </section>
         `,
-        render(data){
-            let ul = this.o_el.querySelector('ul')
-
-            // 每次渲染之前都清空一下
-            ul.innerHTML  = null
-
+        render_createSearch(data){
+            let ul = this.o_el.querySelector('.sch_view .sch_result')
             data.songs.map((item)=>{
                 let li = document.createElement('li')
                 li.innerHTML = `
-                    <a href="/src/song.html?${item.songId}" class="sch_link">
-                        ${item.songName}
-                        <svg class="icon schIcon" aria-hidden="true">
-                            <use xlink:href="#icon-sousuo"></use>
-                        </svg>
-                    </a>
+                    <span>${item.songName}</span>
+                    <svg class="icon schIcon" aria-hidden="true">
+                        <use xlink:href="#icon-sousuo"></use>
+                    </svg>
                 `
+                li.setAttribute('data-songId', item.songId)
+                li.setAttribute('data-ele', 'songLi')
                 li.classList.add('sch_li')
                 ul.appendChild(li)
-            })   
-            
+            })
         },
-        toggleShowOrHidden(key){
-            if(key === 'show'){
-                this.o_el.classList.add('active')
-            }else if(key === 'hidden'){
-                this.o_el.classList.remove('active')
+        render_songClickSong(data){
+            let ol = this.o_el.querySelector('.click_view .songsWrapper')
+            let li = document.createElement('li')
+            li.innerHTML = `
+                <div class="songLink">
+                    <h3 class="songName">${data.songName}</h3>
+                    <p class="singer">
+                        <svg class="icon songSq" aria-hidden="true">
+                            <use xlink:href="#icon-sq"></use>
+                        </svg>
+                        ${data.singer}
+                    </p>
+                    <svg class="icon songPlay" aria-hidden="true">
+                        <use xlink:href="#icon-bofang"></use>
+                    </svg>
+                </div>
+            `,
+            li.setAttribute('data-songId', data.songId)
+            li.setAttribute('data-ele', 'song')
+            ol.appendChild(li)
+        },
+        showOrHidden(key, data){
+            let label = this.o_el.querySelector('label').classList
+            let close = this.o_el.querySelector('.sch_close').classList
+            let sch_view = this.o_el.querySelector('.sch_view').classList
+            let click_view = this.o_el.querySelector('.click_view').classList
+            let hint = this.o_el.querySelector('.sch_view h3')
+            let input = this.o_el.querySelector('.sch_input')
+
+            if(key === 'init'){
+                label.add('active')
+                close.remove('active')
+                sch_view.remove('active')
+                click_view.remove('active')
+            }else if(key === 'input_null'){
+                label.remove('active')
+                close.add('active')
+                sch_view.remove('active')
+                click_view.remove('active')
+            }else if(key === 'input_content'){
+                label.remove('active')
+                close.add('active')
+                sch_view.add('active')
+                click_view.remove('active')
+                hint.innerText = `搜索“${data}”`
+            }else if(key === 'close'){
+                label.add('active')
+                close.remove('active')
+                sch_view.remove('active')
+                click_view.remove('active')
+                input.value = ''
+            }else if(key === 'clickSong'){
+                label.remove('active')
+                close.add('active')
+                sch_view.remove('active')
+                click_view.add('active')
+                input.value = data
             }
         }
     })
@@ -54,78 +108,62 @@
         data: {
             songs: []
         },
-        query(data){
-            let songName = new AV.Query('Song')
-            songName.contains('songName', data)
-            let singger = new AV.Query('Song')
-            singger.contains('singer', data)
-            return AV.Query.or(songName, singger).find().then((responseData)=>{
-                if(!responseData.length){return}
-                this.data.songs = []
-                responseData.map((item)=>{
-                    this.data.songs.push(Object.assign({}, item.attributes, {songId: item.id}))
-                })
-            })
-        }
     })
 
     let controller = new Controller({
         view: view,
         model: model,
-        // events: [
-        //     {ele: 'input', type: 'input', fn: 'listenInput'}
-        // ],
+        timer: '',
+        events: [
+            {ele: 'txt', type: 'input', fn: 'inputTxt'},
+            {ele: 'close', type: 'click', fn: 'listenClose'},
+            {ele: 'songLi', type: 'click', fn: 'clickSongLi'},
+            {ele: 'song', type: 'click', fn: 'clickSong'}
+        ],
         eventHub: [
-            {type: 'chooseTab', fn: 'afterTabChoose'}
+            {type: 'clickTab', fn: 'listenClickTab'}
         ],
         init(){
             this.view.init()
             this.bindEventHub()
-            // this.bindEvents()
-            this.listenInput()
+            this.bindEvents()
         },
-        afterTabChoose(data){
-            if(data.tabName === 'page_sch'){
-                this.view.toggleShowOrHidden('show')
+        listenClickTab(data){
+            this.view.toggleShowOrHidden('page_sch', data.tabName, '#page_sch')
+            this.view.showOrHidden('init')
+        },
+        inputTxt(target){
+            if(target.value.trim() === ''){
+                this.view.showOrHidden('input_null')
+                return 
             }else{
-                this.view.toggleShowOrHidden('hidden')
+                this.view.showOrHidden('input_content', target.value)
+                this.view.clearUlOrOl('.sch_result')
+                if(this.timer){window.clearTimeout(this.timer)}
+                this.timer = setTimeout(()=>{
+                    this.timer = null
+                    this.model.relationFetch('songs', 'Song', target.value, 'songName', 'singer', ).then(()=>{
+                        this.view.render_createSearch(this.model.data)
+                    })
+                }, 300)
             }
         },
-        listenInput(target){
-            // 没有搜索内容
-            // 搜索提示隐藏
-            // 有搜索内容
-            // 搜索提示显示
-            // 过300毫秒，搜索结果显示
-
-            // 删除搜索框内容
-            // 搜索提示紧跟着一个个消失，直到彻底隐藏
-            // 搜索结果紧跟着变化，直到什么都没有
-
-            this.view.o_el.querySelector('input').addEventListener('input', (ev)=>{
-                let target = ev.target
-                let h3 = this.view.o_el.querySelector('h3')
-                let ul = this.view.o_el.querySelector('ul')
-                if(!target.value){
-                    console.log('没有搜索')
-                    h3.classList.remove('active')
-                    ul.classList.remove('active')
-                    return 
+        listenClose(){
+            this.view.showOrHidden('close')
+        },
+        clickSongLi(target){
+            let songId = target.getAttribute('data-songId')
+            this.model.data.songs.map((item)=>{
+                if(item.songId = songId){
+                    Object.assign(this.view.data.song, item)
                 }
-    
-                h3.classList.add('active')
-                ul.classList.add('active')
-                h3.innerText = `搜索：${target.value}`
-
-                let timer
-                if(timer){window.clearTimeout(timer)}
-                timer = setTimeout(()=>{
-                    this.model.query(target.value).then(()=>{
-                        console.log(this.model.data.songs)
-                        this.view.render(this.model.data)
-                    })
-                }, 500)
             })
+            this.view.showOrHidden('clickSong', this.view.data.song.songName)
+            this.view.render_songClickSong(this.view.data.song)
+        },
+        clickSong(target){
+            let songId = target.getAttribute('data-songId')  
+            window.location.href = `/src/song.html/?songId=${songId}`
         }
     })
 

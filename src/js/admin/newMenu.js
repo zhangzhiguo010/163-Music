@@ -47,6 +47,7 @@
             </form>
         `,
         render(data){
+            console.log(data)
             let newTemplate = this.template
             let placeHolder = ['menuName', 'creator', 'description']
             placeHolder.map((item)=>{

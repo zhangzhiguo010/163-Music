@@ -1,6 +1,9 @@
 {
-    let view = new View2({
+    let view = new View({
         el: '.menu_songList',
+        data: {
+            selectedId: ''
+        },
         template: `
             <h3>歌曲列表</h3>
             <ol class="songsWrapper">
@@ -25,41 +28,37 @@
                         </svg>
                     </a>
                 `,
-                li.setAttribute('data-songId', item.songId)
+                li.setAttribute('data-songId', item.id)
+                li.setAttribute('data-ele', 'song')
                 ul.appendChild(li)
             })
         }
     })
-    let model = new Model2({
+    let model = new Model({
         data: {
             songs: []
         }
     })
-    let controller = new Controller2({
+    let controller = new Controller({
         view: view,
         model: model,
-        eventHub: [
-            {type: 'uploadMenu', fn: 'listenUploadMenu'}
+        events: [
+            {ele: 'song', type: 'click', fn: 'clickSong'}
         ],
         init(){
             this.view.init()
-            this.bindEventHub()
-        },
-        listenUploadMenu(obj){
-            let menuItem = AV.Object.createWithoutData('Playlist', obj.menuData.menuId)
-            let songStorage = new AV.Query('Song')
-            songStorage.equalTo('dependent', menuItem)
-            return songStorage.find().then((responseData)=>{
-                this.model.data.songs = responseData.map((item)=>{
-                    return {
-                        songId: item.id,
-                        songName: item.attributes.songName,
-                        singer: item.attributes.singer,
-                    }
+            this.getUrlSearch('menuId').then((menuId)=>{
+                this.model.fetchSongFromMenu('Song', 'Playlist', menuId, 'songs').then(()=>{
+                    this.view.render(this.model.data)
                 })
-                this.view.render(this.model.data)
             })
+            this.bindEvents()
+        },
+        clickSong(target){
+            this.view.data.selectedId = target.getAttribute('data-songId')
+            window.location.href = `/src/song.html/?songId=${this.view.data.selectedId}`
         }
+        
     })
 
     controller.init()

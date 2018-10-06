@@ -1,13 +1,13 @@
 {
-    let view = new View2({
+    let view = new View({
         el: '.page',
         data: {
             status: 'pause',
             activedLyric: ''
         },
         template: `
-            <div class="wrapper">
-                <audio></audio>
+            <div class="wrapper" data-ele="wrapper">
+                <audio data-ele="audio"></audio>
                 <div class="wrapper_bg"></div>
                 <header>
                     <span class="logo">
@@ -106,12 +106,19 @@
                 let allP = this.o_el.querySelectorAll('.lyricsWrapper p')
                 let activeP
                 for(let i=0; i<allP.length; i++){
+                    let previousTime = allP[i].getAttribute('data-time')-0
+                    let nextTime = allP[i+1].getAttribute('data-time')-0
+                    // 刚开始的时候，显示第一句
+                    if(playTime < allP[0].getAttribute('data-time')-0){
+                        activeP = allP[0]
+                        break
+                    }
+                    // 播放结束，显示最后一句
                     if(i === allP.length-1){
                         activeP = allP[i]
                         break
                     }else{
-                        let previousTime = allP[i].getAttribute('data-time')-0
-                        let nextTime = allP[i+1].getAttribute('data-time')-0
+                        // 播放时间介于某句歌词和下一句歌词之间时，显示该句歌词
                         if(playTime >= previousTime && playTime < nextTime){
                             activeP = allP[i]
                             break
@@ -133,61 +140,42 @@
             }, 100)
         }
     })
-    let model = new Model2({
-        data: {},
-        fetch(songId){
-            let songStorage = new AV.Query('Song')
-            return songStorage.get(songId).then((responseData)=>{
-                Object.assign(this.data, responseData.attributes, {songId: responseData.id})
-            })
-        }
+    let model = new Model({
+        data: {}
     })
 
-    let controller = new Controller2({
+    let controller = new Controller({
         view: view,
         model: model,
-        eventHub: [
-
+        events: [
+            {ele: 'wrapper', type: 'click', fn: 'clickWrapper'},
+            {ele: 'audio', type: 'ended', fn: 'listenAudioEnded'}
         ],
         init(){
             this.view.init()
-            this.getSongId().then((songId)=>{
-                this.model.fetch(songId).then(()=>{
+            this.getUrlSearch('songId').then((songId)=>{
+                this.model.fetch('Song', songId).then(()=>{
                     this.view.render(this.model.data)
                     this.view.controlAudio(this.model.data)
                 })
             })
             this.bindEvents()
+            this.scrollLyrics()
         },
-        getSongId(){
-            return new Promise((resolve)=>{
-                let search = window.location.search
-                if(search.indexOf('?') !== -1){
-                    search = search.substring(1)
-                }
-                search.split('$').filter(v => v).map((item)=>{
-                    let array = item.split('=')
-                    if(array[0] === 'songId'){
-                        resolve(array[1])
-                    }
-                })
-            })
-        },
-        bindEvents(){
-            this.view.o_el.querySelector('.wrapper').addEventListener('click', ()=>{
-                if(this.view.data.status === 'pause'){
-                    this.view.data.status = 'play'
-                    this.view.controlAudio(this.model.data)
-                }else{
-                    this.view.data.status = 'pause'
-                    this.view.controlAudio(this.model.data)
-                }
-            })
-            this.view.o_el.querySelector('audio').addEventListener('ended', (ev)=>{
-                console.log('歌曲结束了')
+        clickWrapper(){
+            if(this.view.data.status === 'pause'){
+                this.view.data.status = 'play'
+                this.view.controlAudio(this.model.data)
+            }else{
                 this.view.data.status = 'pause'
                 this.view.controlAudio(this.model.data)
-            })
+            }
+        },
+        listenAudioEnded(){
+            this.view.data.status = 'pause'
+            this.view.controlAudio(this.model.data)
+        },
+        scrollLyrics(){
             this.view.o_el.querySelector('audio').addEventListener('timeupdate', (ev)=>{
                 this.view.showLyric(ev.currentTarget.currentTime)
             })
