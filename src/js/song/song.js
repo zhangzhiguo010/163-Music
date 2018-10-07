@@ -149,7 +149,6 @@
         model: model,
         events: [
             {ele: 'wrapper', type: 'click', fn: 'clickWrapper'},
-            {ele: 'audio', type: 'ended', fn: 'listenAudioEnded'}
         ],
         init(){
             this.view.init()
@@ -161,6 +160,7 @@
             })
             this.bindEvents()
             this.scrollLyrics()
+            this.listenAudioEnded()
         },
         clickWrapper(){
             if(this.view.data.status === 'pause'){
@@ -172,8 +172,10 @@
             }
         },
         listenAudioEnded(){
-            this.view.data.status = 'pause'
-            this.view.controlAudio(this.model.data)
+            this.view.o_el.querySelector('audio').addEventListener('ended', (ev)=>{
+                this.view.data.status = 'pause'
+                this.view.controlAudio(this.model.data)
+            })
         },
         scrollLyrics(){
             this.view.o_el.querySelector('audio').addEventListener('timeupdate', (ev)=>{
