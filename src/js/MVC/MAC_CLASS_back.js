@@ -16,14 +16,13 @@ class View{
         }
     }
     toggleShowOrHidden(name1, name2, selector){
-        console.log('你好')
         if(name1 === name2){
             document.querySelector(selector).classList.add('active')
         }else{
             document.querySelector(selector).classList.remove('active')
         }
     }
-    clearUlOrOl(selector){
+    clearUlOrOl(ul){
         let ele = document.querySelector(selector)
         for(let i=0; i< ele.childNodes.length; i++){
             ele.removeChild(ele.childNodes[i])
@@ -62,7 +61,6 @@ class Model{
             storeItem.set(key, data[key])
         }
         return storeItem.save().then((response)=>{
-            console.log('MVC: 更新数据成功！')
             Object.assign(this.data, response.attributes, {id:response.id})
         })
     }
@@ -77,9 +75,12 @@ class Model{
     fetchAll(name, local){
         let store = new AV.Query(name)
         return store.find().then((response)=>{
+            console.log('MVC这里')
+            console.log(response)
             this.data[local] = []
             response.map((item)=>{
                 this.data[local].push(Object.assign({}, item.attributes, {id: item.id}))
+                // console.log(this.data[local])
             })
         })
     }
@@ -148,6 +149,9 @@ class Model{
         })
     }
 }
+
+
+
 
 class Controller{
     constructor({...res}){

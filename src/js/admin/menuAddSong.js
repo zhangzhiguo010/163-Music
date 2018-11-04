@@ -1,17 +1,14 @@
 {
-    let view = new View2({
-        data: {
-            selectedId: ''
-        },
+    let view = new View({
         el: '.menuAddSong-inner',
         template:`
             <div class="amount-wrapper">
                 <svg class="icon" aria-hidden="true">
                     <use xlink:href="#icon-suoyou"></use>
                 </svg>
-                <span>所有歌曲(共 {songsAmount曲} </span>
+                <span class='sum'></span>
             </div>
-            <div class="create-wrapper clearfix">
+            <div class="create-wrapper" data-ele="addSong">
                 <div class="createButton" data-ele="createButton">
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-tianjia"></use>
@@ -36,79 +33,71 @@
                 <span>删除</span>
             </div>
             <div class="page-wrapper">
-                <div class="clearfix">
-                    <div class="nextPageButton">
-                        <span>下一页</span>
-                        <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#icon-fenyexiayiye"></use>
-                        </svg>
-                    </div>
-                    <div class="previousPageButton">
-                        <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#icon-fenyeshangyiye"></use>
-                        </svg>
-                        <span>上一页</span>
-                    </div>
-                </div>
+                <div id="page_menuAddSong"></div>
             </div>
-        `,
-        templateLi: `
-            <div class="coverImgWrapper">
-                <img src="{coverUrl}" alt="封面">
-            </div>
-            <div>{songName}</div>
-            <div>{singer}</div>
-            <div>{menuName}</div>
-            <div class="congtrolTag">
-                <div data-ele="addSong">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-add"></use>
-                    </svg>
-                    <span>加入歌单</span>
-                </div>
-                <div>
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-pinglun"></use>
-                    </svg>
-                    <span>查看评论</span>
-                </div>
-            </div>    
         `,
         render(data){
-            let placeholder = ['coverUrl', 'songName', 'singer', 'menuName']
-            data.songs.map((song)=>{
-                let ul = this.o_el.querySelector('ul[class=item-wrapper]')
+            this.o_el.querySelector('.sum').innerText = `所有歌曲(共 {${data.songs.length}曲} `
+            let liArray = data.songs.map((item)=>{
                 let li = document.createElement('li')
-                let newTemplate = this.templateLi
-                placeholder.map((item)=>{
-                    newTemplate = newTemplate.replace(`{${item}}`, song[item] || '')
-                })
-                li.innerHTML = newTemplate
-                li.setAttribute('data-id', song.songId)
-                li.setAttribute('data-ele', 'liItem')
+                li.innerHTML = `
+                    <div class="coverImgWrapper">
+                        <img src="${item.coverUrl || ''}" alt="封面">
+                    </div>
+                    <div>${item.songName}</div>
+                    <div>${item.singer}</div>
+                    <div>${item.menuName}</div>
+                    <div class="congtrolTag">
+                        <div data-ele="addSong">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#icon-add"></use>
+                            </svg>
+                            <span>加入歌单</span>
+                        </div>
+                        <div>
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#icon-pinglun"></use>
+                            </svg>
+                            <span>查看评论</span>
+                        </div>
+                    </div>
+                `
+                li.setAttribute('data-id', item.id)
                 li.classList.add('autoCreateSongLi')
-                ul.appendChild(li)
+                return li
+            })
+            pagination.call(this, {
+                pageWrapper: '#page_menuAddSong',
+                dataSource: liArray,
+                dataSize: 10,
+                callBack(newData, maxPageNumber){
+                    let ul = this.o_el.querySelector('.item-wrapper')
+                    this.clearUlOrOl(ul, [ul.firstElementChild])
+                    newData.map((li)=>{
+                        ul.appendChild(li) 
+                    })
+                }
             })
         }
     })
 
-    let model = new Model2({
+    let model = new Model({
         data: {
             menuId: '',    // 被点击添加歌曲按钮的那个歌单的id值
-            // [{id:'', coverUrl:'', songName:'', singer:'', menuName:''}, {...}]
-            songs: []
+            songs: [],      //歌单中不存在的歌曲
+            allSong: [],    //所有歌曲
+            menuSong: []    // 歌单中歌曲
         }
     })
 
-    let controller = new Controller2({
+    let controller = new Controller({
         view: view,
         model: model,
         events: [
-            {ele: 'liItem', type: 'click', fn: 'handleLiItem'},
             {ele: 'addSong', type: 'click', fn: 'handleAddSong'}
         ],
         eventHub: [
-            {type: 'menuAddSong', fn: 'listenMenuAddSong'},
+            {type: 'clickAddBtn', fn: 'listenMenuAddSong'},
             {type: 'selectTab', fn: 'listenSelectTab'}
         ],
         init(){
@@ -117,53 +106,48 @@
             this.bindEventHub()  
         },
         listenSelectTab(){
-            document.querySelector('.menuAddSong').classList.remove('active')
+            this.view.toggleActive('.menuAddSong', 'deactive')
         },
         listenMenuAddSong(obj){
-            document.querySelector('.menuAddSong').classList.add('active')
-            this.model.data.songs = []
-            this.model.data.menuId = obj.menuId
-            // 通过参数获得所有歌曲，这些歌曲都是歌单中不存在的
-            if(obj !== ''){
-                obj.data.map((item)=>{
-                    // 得到每首歌曲的歌单
-                    let menuName   
-                    let songItem = AV.Object.createWithoutData('Song', item.id);
-                    songItem.fetch({ include: ['dependent'] }).then((data)=>{
-                        menuName = data.get('dependent').attributes.menuName
-                        let songId = item.id
-                        let {songName, songUrl, coverUrl, singer, compose, lyrics} =  item.attributes
-                        // 歌曲和歌单信息存储本地
-                        this.model.data.songs.push({
-                            songId: songId, 
-                            songName: songName, 
-                            songUrl: songUrl, 
-                            coverUrl: coverUrl, 
-                            singer: singer, 
-                            compose: compose, 
-                            lyrics: lyrics,
-                            menuName: menuName, //歌曲所属歌单
-                        })
-                        // 渲染页面
-                        this.view.init()
+            this.model.data.id = obj.id
+            this.view.toggleActive('.menuAddSong', 'active')
+            this.model.fetchAll('Song', 'allSong').then(()=>{
+                this.model.fetchSongFromMenu('Song', 'Playlist', this.model.data.id, 'menuSong').then(()=>{
+                    this.removeRepet(this.model.data.allSong, this.model.data.menuSong).then((currentSongs)=>{
+                        this.model.data.songs = currentSongs
                         this.view.render(this.model.data)
                     })
                 })
-            }else{
-                // 渲染页面
-                this.view.init()
+            })
+        },
+        handleAddSong(target){
+            this.model.changeSongPointMenu('Song', 'Playlist', this.fendLi(target), this.model.data.id)
+        },
+        fendLi(target){
+            while(target.nodeName.toLowerCase() !== 'ul'){
+                if(target.nodeName.toLowerCase() === 'li'){
+                    return target.getAttribute('data-id')
+                }
+                target = target.parentElement
             }
         },
-        // 记录点击的那首歌曲的id值
-        handleLiItem(target){
-            this.view.data.selectedId = target.getAttribute('data-id')
-        },
-        // 将歌曲关联上歌单
-        handleAddSong(){
-            let songItem = AV.Object.createWithoutData('Song', this.view.data.selectedId)
-            let menuItem = AV.Object.createWithoutData('Playlist', this.model.data.menuId)
-            songItem.set('dependent', menuItem)
-            songItem.save()
+        removeRepet(bigArray, smallArray){   
+            let currentArray = []
+            return new Promise((resolve)=>{
+                bigArray.map((bigItem, index)=>{
+                    smallArray.map((smallItem)=>{
+                        if(smallItem.id === bigItem.id){
+                            bigArray[index] = ''
+                        }
+                    })
+                })
+                bigArray.map((item)=>{
+                    if(item !== ''){
+                        currentArray.push(item)
+                    }
+                })
+                resolve(currentArray)
+            })
         }
     })
 

@@ -1,5 +1,5 @@
 {
-    let view = new View2({
+    let view = new View({
         data: {
             selectedId: ''
         },
@@ -36,126 +36,96 @@
                 <span>删除</span>
             </div>
             <div class="page-wrapper">
-                <div class="clearfix">
-                    <div class="nextPageButton">
-                        <span>下一页</span>
-                        <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#icon-fenyexiayiye"></use>
-                        </svg>
-                    </div>
-                    <div class="previousPageButton">
-                        <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#icon-fenyeshangyiye"></use>
-                        </svg>
-                        <span>上一页</span>
-                    </div>
-                </div>
+                <div id="page_songList"></div>
             </div>
-        `,
-        templateLi: `
-            <div class="coverImgWrapper">
-                <img src="{coverUrl}" alt="封面">
-            </div>
-            <div>{songName}</div>
-            <div>{singer}</div>
-            <div>{menuName}</div>
-            <div class="congtrolTag">
-                <div data-ele="editSong">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-bianji"></use>
-                    </svg>
-                    <span>编辑</span>
-                </div>
-                <div>
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-dustbin"></use>
-                    </svg>
-                    <span>删除</span>
-                </div>
-                <div>
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-pinglun"></use>
-                    </svg>
-                    <span>查看评论</span>
-                </div>
-            </div>    
         `,
         render(data){
-            let ul = this.o_el.querySelector('ul[class=item-wrapper]')
-            let placeholder = ['coverUrl', 'songName', 'singer', 'menuName']
-            data.songs.map((song)=>{
+            // console.log('render渲染')
+            let liArray = data.songs.map((item)=>{
                 let li = document.createElement('li')
-                let newTemplate = this.templateLi
-                placeholder.map((item)=>{
-                    newTemplate = newTemplate.replace(`{${item}}`, song[item] || '')
-                })
-                li.innerHTML = newTemplate
-                li.setAttribute('data-id', song.id)
-                li.setAttribute('data-ele', 'listItem')
+                li.innerHTML = `
+                    <div class="coverImgWrapper">
+                        <img src="${item.coverUrl || ''}" alt="封面">
+                    </div>
+                    <div>${item.songName}</div>
+                    <div>${item.singer}</div>
+                    <div>${item.menuName}</div>
+                    <div class="congtrolTag">
+                        <div data-ele="songEdit">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#icon-bianji"></use>
+                            </svg>
+                            <span>编辑</span>
+                        </div>
+                        <div data-ele="songRemove">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#icon-dustbin"></use>
+                            </svg>
+                            <span>删除</span>
+                        </div>
+                        <div>
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#icon-pinglun"></use>
+                            </svg>
+                            <span>查看评论</span>
+                        </div>
+                    </div> 
+                `
+                li.setAttribute('data-id', item.id)
+                li.setAttribute('data-ele', 'song_songList')
                 li.classList.add('autoCreateSongLi')
-                ul.appendChild(li)
+                return li
             })
-        }
+            pagination.call(this, {
+                pageWrapper: '#page_songList',
+                dataSource: liArray,
+                dataSize: 10,
+                callBack(newData, maxPageNumber){
+                    // console.log('pagination函数')
+                    let ul = this.o_el.querySelector('.item-wrapper')
+                    this.clearUlOrOl(ul, [ul.firstElementChild])
+                    newData.map((item)=>{
+                        ul.appendChild(item) 
+                    })
+                }
+            })
+        },
+
     })
 
-    let model = new Model2({
+    let model = new Model({
         data: {
-            // [{id:'', coverUrl:'', songName:'', singer:'', menuName:''}, {...}]
             songs: []
         }
     })
 
-    let controller = new Controller2({
+    let controller = new Controller({
         view: view,
         model: model,
         events: [
-            {ele: 'listItem', type: 'click', fn: 'handleListItem'},
-            {ele: 'editSong', type: 'click', fn: 'handleEditSong'},
+            {ele: 'song_songList', type: 'click', fn: 'clickSong_songList'},
+            {ele: 'songEdit', type: 'click', fn: 'clickSongEdit'},
+            {ele: 'songRemove', type: 'click', fn: 'clickSongRemove'},
         ],
         eventHub: [
             {type: 'selectTab', fn: 'listenSelectTab'},
-            {type: 'editSongComplete', fn: 'listenEditSongComplete'},
-            {type: 'newSongComplete', fn: 'listenNewSongComplete'},
+            {type: 'afterEditSong', fn: 'afterEditSong'},
+            {type: 'afterNewSong', fn: 'afterNewSong'}
         ],
         init(){
             this.view.init()
-            this.bindProxy()
             this.bindEvents()
             this.bindEventHub()  
         },
         listenSelectTab(obj){
-            // console.log(0)
             this.view.toggleShowOrHidden(obj.tabName, 'tab_songList', '.songList')
-            this.model.data.songs = []
-            // 找到所有歌曲
-            let songStorage = new AV.Query('Song')
-            // console.log(1)
-            songStorage.find().then((responseData)=>{
-                // console.log(2)
-                responseData.map((item)=>{ 
-                    // console.log(3)
-                    this.xx(item).then(()=>{
-                        // console.log(6)
-                        this.view.init()
-                        this.view.render(this.model.data)
-                    })
-                })
-            })
-        },
-        // 找到歌曲对应的歌单名
-        xx(item){
-            // console.log(4)
-            let menuName
-            let songItem = AV.Object.createWithoutData('Song', item.id)
-            return songItem.fetch({ include: ['dependent'] }).then((data)=>{
-                // console.log(5)
-                menuName = data.get('dependent').attributes.songMenuName
-                this.model.data.songs.push(Object.assign({}, item.attributes, {id: item.id, menuName: menuName}))
+            this.model.fetchAll('Song', 'songs').then(()=>{
+                this.view.render(this.model.data)
             })
         },
         // 监听编辑完歌曲，更新data中对应的歌曲信息，更新页面
-        listenEditSongComplete(data){
-            document.querySelector('.songList').classList.add('active')
+        afterEditSong(data){
+            this.view.toggleActive('.songList', 'active')
             this.model.data.songs.map((song)=>{
                 if(song.id === data.id){
                     Object.assign(song, data)
@@ -163,23 +133,33 @@
                 }
             })
         },
-        listenNewSongComplete(data){
-            document.querySelector('.songList').classList.add('active')
-            let menuStorage = new AV.Query('Playlist')
-            menuStorage.get(data.dependent.id).then((responseData)=>{
-                let menuName = responseData.attributes.songMenuName
-                this.model.data.songs.push({coverUrl: data.coverUrl, songName: data.songName, singer: data.singer, menuName: menuName})
-                this.view.render(this.model.data)
-            })
+        afterNewSong(data){
+            this.view.toggleActive('.songList', 'active')
+            this.model.data.push(data)
+            this.view.render(this.model.data)
         },
         // 处理歌曲的点击，记录id值
-        handleListItem(target){
+        clickSong_songList(target){
             this.view.data.selectedId = target.getAttribute('data-id')
         },
         // 处理触发标签切换，触发编辑歌曲事件
-        handleEditSong(){
-            window.eventHub.trigger('editSong', {id: this.view.data.selectedId})
-            document.querySelector('.songList').classList.remove('active')
+        clickSongEdit(){
+            this.view.toggleActive('.songList', 'deactive')
+            window.eventHub.trigger('clickSongEdit', {id: this.view.data.selectedId})
+        },
+        clickSongRemove(){
+            this.model.delete('Song', this.view.data.selectedId)
+            this.model.data.songs.map((item, index)=>{
+                if(item.id === this.view.data.selectedId){
+                    this.model.data.songs[index] = ''
+                }
+            })
+            this.model.data.songs.map((item)=>{
+                if(item !== ''){
+                    this.model.data.songs.push(item)
+                }
+            })
+            this.view.render(this.model.data)
         }
     })
 

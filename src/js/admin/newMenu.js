@@ -1,5 +1,5 @@
 {
-    let view = new View2({
+    let view = new View({
         el: '.newMenu-inner',
         data: {
             fileType: 'cover',
@@ -47,22 +47,22 @@
             </form>
         `,
         render(data){
-            console.log(data)
             let newTemplate = this.template
             let placeHolder = ['menuName', 'creator', 'description']
             placeHolder.map((item)=>{
-                newTemplate = newTemplate.replace(`{${item}}`, data[item] || '')
+                newTemplate = newTemplate.replace(`{${item}}`, data.menu[item] || '')
             })
             this.o_el.innerHTML = newTemplate
         }
     })
 
-    let model = new Model2({
-        // {menuName: '', creator: '', description: ''， coverUrl: ''}
-        data: {}
+    let model = new Model({
+        data: {
+            menu: {}
+        }
     })
 
-    let controller = new Controller2({
+    let controller = new Controller({
         view: view,
         model: model,
         events: [
@@ -80,93 +80,48 @@
         },
         // 判断显示还是隐藏
         listenSelectTab(obj){
-            if(obj.tabName === 'tab_newMenu'){
-                document.querySelector('.newMenu').classList.add('active')
-                this.model.data = {}
-                this.view.init()
-                this.view.render(this.model.data)
-            }else{
-                document.querySelector('.newMenu').classList.remove('active')
-            }
+            this.view.toggleShowOrHidden(obj.tabName, 'tab_newMenu', '.newMenu')
+            this.view.render(this.model.data)
         },
         listenEditMenu(obj){         
-            // 显示页面
-            document.querySelector('.newMenu').classList.add('active')
-            // 获得歌曲信息
-            let menuStorage = new AV.Query('Playlist')
-            menuStorage.get(obj.id).then((responseData)=>{
-                // 更新本地数据, 并渲染页面
-                let menuId = responseData.id
-                let {menuName, creator, description, coverUrl} = responseData.attributes
-                Object.assign(
-                    this.model.data,
-                    {
-                        menuId: menuId,
-                        menuName: menuName,
-                        creator: creator,
-                        description: description,
-                        coverUrl: coverUrl
-                    }
-                )
-                // 渲染页面
-                this.view.init()
+            this.view.toggleActive('.newMenu', 'active')
+            this.model.fetch('Playlist', obj.id, 'menu').then(()=>{
                 this.view.render(this.model.data)
             })
         },
         handleUploadMenu(){
-            // 收集所有用户信息
             this.getAllInput().then((allInput)=>{
-                // 判断是修改还是新建
-                if(this.model.data.menuId){
-                    // 更新数据库
-                    let menuStorage = AV.Object.createWithoutData('Playlist', this.model.data.menuId)
-                    for(let key in allInput){
-                        menuStorage.set(key, allInput[key])
-                    }
-                    menuStorage.save().then((responseData)=>{
-                        // 更新本地存储
-                        let menuId = responseData.id
-                        let {menuName, creator, description, coverUrl} = responseData.attributes
-                        Object.assign(
-                            this.model.data,
-                            {
-                                menuId: menuId,
-                                menuName: menuName,
-                                creator: creator,
-                                description: description,
-                                coverUrl: coverUrl
-                            }
-                        )
-                        // 事件触发：歌单修改完成
-                        window.eventHub.trigger('editMenuComplete', this.model.data)
-                        document.querySelector('.newMenu').classList.remove('active')
+                // 有id值就是修改，没有id值就是新建
+                let id = this.model.data.menu.id
+                if(id){
+                    this.model.change('Playlist', id, allInput, 'menu').then(()=>{
+                        window.eventHub.trigger('afterEditMenu', this.model.data.menu)
+                        this.view.toggleActive('.newMenu', 'deactive')
                     })
                 }else{
-                    // 保存到数据库
-                    let  Store = AV.Object.extend('Playlist')
-                    let menuStorage = new Store()
-                    menuStorage.save(allInput).then((responseData)=>{
-                        // 更新本地存储
-                        let menuId = responseData.id
-                        let {menuName, creator, description, coverUrl} = responseData.attributes 
-                        Object.assign(
-                            this.model.data,
-                            {
-                                menuId: menuId,
-                                menuName: menuName,
-                                creator: creator,
-                                description: description,
-                                coverUrl: coverUrl
-                            }
-                        )
-                        // 触发事件：歌曲修改完成
-                        window.eventHub.trigger('newMenuComplete', this.model.data)
-                        document.querySelector('.newMenu').classList.remove('active')
+                    this.model.save('Playlist', allInput, 'menu').then(()=>{
+                        window.eventHub.trigger('afterNewMenu', this.model.data.menu)
+                        this.view.toggleActive('.newMenu', 'deactive')
                     })
                 }
             })
         },
-        
+        handleUploadFile(target){
+            let file = target.files[0]
+            let name = file.name
+            let putExtra = {fname: "",params: {},mimeType: [] || null}
+            let config = {useCdnDomain: true,region: qiniu.region.z2}
+            axios.get('http://localhost:8888/uptoken').then((response)=>{
+                let token  = response.data.token
+                qiniu.upload(file, name, token, putExtra, config).subscribe({
+                    next: ()=>{},
+                    error: ()=>{alert('上传出错，请刷新后重试！')},
+                    complete: (responseData)=>{
+                        this.model.data.coverUrl = `http://phnd1fxw9.bkt.clouddn.com/${encodeURIComponent(responseData.key)}`
+                    }
+                })
+            })
+        },
         // 新建歌单时，收集所有信息：歌单名，创建者，歌单描述, 封面外链
         getAllInput(){
             return new Promise((resolve)=>{
@@ -180,23 +135,6 @@
                 resolve(allInput)
             })
         },
-
-        handleUploadFile(target){
-            let file = target.files[0]
-            let name = file.name
-            let putExtra = {fname: "",params: {},mimeType: [] || null}
-            let config = {useCdnDomain: true,region: qiniu.region.z2}
-            axios.get('http://localhost:8888/uptoken').then((response)=>{
-                let token  = response.data.token
-                qiniu.upload(file, name, token, putExtra, config).subscribe({
-                    next: ()=>{},
-                    error: ()=>{alert('上传出错，请刷新后重试！')},
-                    complete: (responseData)=>{
-                        this.model.data.coverUrl = `http://pfap49o5g.bkt.clouddn.com/${encodeURIComponent(responseData.key)}`
-                    }
-                })
-            })
-        }
     })
 
     controller.init()

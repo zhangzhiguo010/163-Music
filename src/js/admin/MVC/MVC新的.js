@@ -37,6 +37,16 @@ class View2{
             document.querySelector(selector).classList.remove('active')
         }
     }
+    clearUlOrOl(selector){
+        let ele = document.querySelector(selector)
+        for(let i=0; i< ele.childNodes.length; i++){
+            ele.removeChild(ele.childNodes[i])
+        }
+        while(ele.hasChildNodes()){
+            ele.removeChild(ele.firstChild)
+        }
+    }
+    
 }
 
 class Model2{

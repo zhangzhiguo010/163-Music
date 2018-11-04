@@ -1,5 +1,5 @@
 {
-    let view = new View2({
+    let view = new View({
         el: '.newAndEdit-inner',
         data: {
             loaded: '',
@@ -78,7 +78,7 @@
             let newTemplate = this.template
             let placeHolder = ['songName', 'singer', 'compose', 'lyrics'] 
             placeHolder.map((item)=>{
-                newTemplate = newTemplate.replace(`{${item}}`, data[item] || '')
+                newTemplate = newTemplate.replace(`{${item}}`, data.song[item] || '')
             })
             this.o_el.innerHTML = newTemplate
             this.createOptions(data)
@@ -88,24 +88,23 @@
                 data.allMenu.map((item, index)=>{
                     let select = this.o_el.querySelector('select[name=playList]')
                     select.add(new Option(item.menuName, item.menuName), index)
-                    select.options[index].setAttribute('data-menuId', item.menuId) 
-                    if(item.menuName === data.menuName){
+                    select.options[index].setAttribute('data-menuId', item.id) 
+                    if(item.menuName === data.song.menuName){
                         select.options[index].setAttribute('selected', 'selected')  //设置显示项
                     }
-                })
-                
+                }) 
             }
         }
     })
-
-    let model = new Model2({
+    let model = new Model({
         resourceName: 'Song',
         data: {
-            allMenu: []     // [{menuId: '', menuItem: ''},...]
+            song :{},
+            allMenu: []
         }
     })
 
-    let controller = new Controller2({
+    let controller = new Controller({
         view: view,
         model: model,
         events: [
@@ -115,7 +114,7 @@
         ],
         eventHub: [
             {type: 'selectTab', fn: 'listenSelectTab'},
-            {type: 'editSong', fn: "listenEditSong"}
+            {type: 'clickSongEdit', fn: "listenClickSongEdit"}
         ],
         init(){
             this.view.init()
@@ -123,25 +122,10 @@
             this.bindEvents()
         },
         listenSelectTab(obj){
-            // 判断显示还是隐藏
-            if(obj.tabName === 'tab_newAndEdit'){
-                this.model.data = {}
-                document.querySelector('.newAndEdit').classList.add('active')
-                // 获得所有歌单
-                menuStorage = new AV.Query('Playlist')
-                menuStorage.find().then((responseData)=>{
-                    let allMenu = []
-                    responseData.map((item)=>{
-                        allMenu.push({menuId: item.id, menuName: item.attributes.menuName})
-                    })
-                    Object.assign(this.model.data, {allMenu: allMenu})
-                    // 渲染页面
-                    this.view.init()
-                    this.view.render(this.model.data)
-                })
-            }else{
-                document.querySelector('.newAndEdit').classList.remove('active')
-            }
+            this.view.toggleShowOrHidden(obj.tabName, 'tab_newAndEdit', '.newAndEdit')
+            this.model.fetchAll('Playlist', 'allMenu').then(()=>{
+                this.view.render(this.model.data)
+            })
         },
         handleUploadFile(target){
             // 上传文件的类型（歌曲或封面）记录在view的data中
@@ -167,7 +151,8 @@
                     complete: (responseData)=>{
                         alert('上传完成')
                         let name = responseData.key
-                        let url = `http://pfap49o5g.bkt.clouddn.com/${encodeURIComponent(responseData.key)}`
+                        let url = `http://phnd1fxw9.bkt.clouddn.com/${encodeURIComponent(responseData.key)}`
+                        console.log(url)
                         // 此处responseData数据是数据库返回的数据，存在model的data中
                         if(this.view.data.fileType === 'song'){
                             Object.assign(this.model.data, {songName: name, songUrl: url})
@@ -180,84 +165,25 @@
         },
         // 判断model中是否有id，确定是修改还是新建
         handleUploadSong(){
-            // 获得输入的所有数据
             this.getAllInput().then((allInput)=>{
-                // 更新歌曲所属歌单
-                // let songItem = AV.Object.createWithoutData('Song', this.model.data.songId)
-                // let menuItem = AV.Object.createWithoutData('Playlist', this.view.data.selectedId)
-                // songItem.set('dependent', menuItem)
-
-
-                // 判断是修改还是新建，有songId就是修改，没有songId就是新建
-                if(this.model.data.songId){
-                    console.log('我是修改')
-                    // 更新到数据库
-                    let songItem = AV.Object.createWithoutData('Song', this.model.data.songId)
-                    for(let key in allInput){
-                        songItem.set(key, allInput[key])
-                    }
-                    songItem.save(allInput).then((responseData)=>{
-                        // 设置歌曲的歌单
-                        let songItem = AV.Object.createWithoutData('Song', responseData.id)
-                        let menuItem = AV.Object.createWithoutData('Playlist', this.view.data.selectedId)
-                        songItem.set('dependent', menuItem)
-                        songItem.save()
-                        // 更新本地存储
-                        let songId = responseData.id
-                        let {songName, songUrl, coverUrl, singer, compose, lyrics, menuName} =  responseData.attributes
-                        Object.assign(
-                            this.model.data, 
-                            {
-                                songId: songId, 
-                                songName: songName, 
-                                songUrl: songUrl, 
-                                coverUrl: coverUrl, 
-                                singer: singer, 
-                                compose: compose, 
-                                lyrics: lyrics,
-                                menuName: menuName,
-                            }
-                        )
-                        // 触发事件：歌曲修改完成
-                        window.eventHub.trigger('editSongComplete', this.model.data.songData)
-                    })
-                }else{ 
-                    console.log('我是新建')
-                    // 获得输入的所有数据
-                    this.getAllInput().then((allInput)=>{
-                        // 保存到leancloud数据库            
-                        let  Store = AV.Object.extend('Song')
-                        let songStorage = new Store()
-                        songStorage.save(allInput).then((responseData)=>{
-                            // 设置歌曲的歌单
-                            let songItem = AV.Object.createWithoutData('Song', responseData.id)
-                            let menuItem = AV.Object.createWithoutData('Playlist', this.view.data.selectedId)
-                            songItem.set('dependent', menuItem)
-                            songItem.save()
-                            // 更新本地存储
-                            let songId = responseData.id
-                            let {songName, songUrl, coverUrl, singer, compose, lyrics, menuName} =  responseData.attributes
-                            Object.assign(
-                                this.model.data, 
-                                {
-                                    songId: songId, 
-                                    songName: songName, 
-                                    songUrl: songUrl, 
-                                    coverUrl: coverUrl, 
-                                    singer: singer, 
-                                    compose: compose, 
-                                    lyrics: lyrics,
-                                    menuName: menuName,
-                                }
-                            )
-                            // 触发事件：歌曲新建完成
-                            window.eventHub.trigger('newSongComplete', this.model.data.songData)    
+                let songId = this.model.data.song.id
+                if(songId){
+                    this.model.change('Song', songId, allInput).then(()=>{
+                        this.model.changeSongPointMenu('Song', 'Playlist', songId, this.view.data.selectedId).then(()=>{
+                            window.eventHub.trigger('afterEditSong', this.model.data.songData)
+                            this.view.toggleActive('.newAndEdit', 'active')
                         })
                     })
-                }  
- 
+                }else{
+                    this.model.saveSongToMenu('Song', 'Playlist', allInput, this.view.data.selectedId, 'song').then(()=>{
+                        window.eventHub.trigger('afterNewSong', this.model.data.song) 
+                        this.view.toggleActive('.newAndEdit', 'active')
+                    })
+                    
+                } 
+
             })
-            document.querySelector('.newAndEdit').classList.remove('active')
+            this.view.toggleActive('.newAndEdit', 'deactive')
         },
         // 新建歌曲时，收集所有信息：歌曲名，演唱者，作曲者，歌词，歌单id
         getAllInput(){
@@ -279,51 +205,12 @@
                 resolve(allInput)
             })
         },
-        listenEditSong(data){
-            // 显示页面
-            document.querySelector('.newAndEdit').classList.add('active')
-            // 获得歌曲信息
-            let songStorage = new AV.Query('Song')
-            songStorage.get(data.id).then((responseData)=>{
-                // 更新本地数据, 并渲染页面
-                this.updateLocalData(responseData)
-            })
-        },
-        updateLocalData(responseData){
-            let songId = responseData.id
-            let {songName, songUrl, coverUrl, singer, compose, lyrics} =  responseData.attributes
-            let songItem = AV.Object.createWithoutData('Song', songId)
-            // 获得歌曲所属的歌单
-            return songItem.fetch({ include: ['dependent'] }).then((song)=>{
-                let menuName = song.get('dependent').attributes.menuName
-                // 得到所有歌单
-                menuStorage = new AV.Query('Playlist')
-                menuStorage.find().then((responseData)=>{
-                    let allMenu = []
-                    responseData.map((item)=>{
-                        allMenu.push({menuId: item.id, menuName: item.attributes.menuName})
-                    })
-                    // 更新本地存储
-                    Object.assign(
-                        this.model.data, 
-                        {
-                            songId: songId, 
-                            songName: songName, 
-                            songUrl: songUrl, 
-                            coverUrl: coverUrl, 
-                            singer: singer, 
-                            compose: compose, 
-                            lyrics: lyrics,
-                            menuName: menuName, //歌曲所属的歌单
-                            allMenu: allMenu
-                        },
-                    )
-                    this.view.init()
-                    this.view.render(this.model.data)
-                })
+        listenClickSongEdit(data){
+            this.view.toggleActive('.newAndEdit', 'active')
+            this.model.fetch('Song', data.id, 'song').then(()=>{
+                this.view.render(this.model.data)
             })
         }
     })
-
     controller.init.call(controller)
 }

@@ -16,21 +16,28 @@ class View{
         }
     }
     toggleShowOrHidden(name1, name2, selector){
-        console.log('你好')
         if(name1 === name2){
             document.querySelector(selector).classList.add('active')
         }else{
             document.querySelector(selector).classList.remove('active')
         }
     }
-    clearUlOrOl(selector){
-        let ele = document.querySelector(selector)
-        for(let i=0; i< ele.childNodes.length; i++){
-            ele.removeChild(ele.childNodes[i])
-        }
-        while(ele.hasChildNodes()){
-            ele.removeChild(ele.firstChild)
-        }
+    clearUlOrOl(o_ulOrOl, except){
+        // let ele = document.querySelector(selector)
+        // for(let i=0; i< ele.childNodes.length; i++){
+        //     ele.removeChild(ele.childNodes[i])
+        // }
+        // while(ele.hasChildNodes()){
+        //     ele.removeChild(ele.firstChild)
+        // }
+        let allLi = o_ulOrOl.querySelectorAll('li')
+        Array.from(allLi).map((item)=>{
+            except.map((item2)=>{
+                if(item !== item2){
+                    o_ulOrOl.removeChild(item)
+                }
+            })
+        })
     }
 }
 
@@ -39,12 +46,11 @@ class Model{
         Object.assign(this, res)
     }
     // 新建仓库，新建一条数据
-    save(storeName, data){
+    save(storeName, data, local){
         let  Store = AV.Object.extend(storeName)
         let store = new Store()
         return store.save(data).then((response)=>{
-            console.log('MVC: 新建数据成功！')
-            Object.assign(this.data, response.attributes, {id: response.id})
+            Object.assign(this.data[local], response.attributes, {id: response.id})
         })
     }
     // 删除一条指定id的数据
@@ -56,27 +62,27 @@ class Model{
         )
     }
     // 更改一条指定id的数据
-    change(name, id, data){
+    change(name, id, data, local){
         let storeItem = AV.Object.createWithoutData(name, id)
         for(let key in data){
             storeItem.set(key, data[key])
         }
         return storeItem.save().then((response)=>{
-            console.log('MVC: 更新数据成功！')
-            Object.assign(this.data, response.attributes, {id:response.id})
+            Object.assign(this.data[local], response.attributes, {id:response.id})
         })
     }
     // 得到一条指定id的数据
-    fetch(name, id){
+    fetch(name, id, local){
         let store = new AV.Query(name)
         return store.get(id).then((response)=>{
-            Object.assign(this.data, response.attributes, {id:response.id})
+            Object.assign(this.data[local], response.attributes, {id:response.id})
         })
     }
     // 得到指定数据库的所有数据
     fetchAll(name, local){
         let store = new AV.Query(name)
         return store.find().then((response)=>{
+        
             this.data[local] = []
             response.map((item)=>{
                 this.data[local].push(Object.assign({}, item.attributes, {id: item.id}))
@@ -89,17 +95,25 @@ class Model{
         menuStorage = new AV.Object(menuStorage)
         songStorage.set('dependent', menuStorage)  
         return songStorage.save(songItem).then((response)=>{
-            Object.assign(this.data, response.attributes, {id: response.id})
-        });
+            Object.assign(this.data, response.attributes, {id: response.id}, )
+        })
     }
     // 新建歌曲，让歌曲指向已经存在的歌单
-    saveSongToMenu(songStorage, menuStorage, songItem, munuId){
+    saveSongToMenu(songStorage, menuStorage, songItem, munuId, local){
         songStorage = new AV.Object(songStorage)
         let menuItem = AV.Object.createWithoutData(menuStorage, munuId)
         songStorage.set('dependent', menuItem)
         return songStorage.save(songItem).then((response)=>{
-            Object.assign(this.data, response.attributes, {id: response.id})
+            Object.assign(this.data[local], response.attributes, {id: response.id})
         })
+    }
+    // 更改歌单指向
+    changeSongPointMenu(songStorage, menuStorage, songId, menuId){
+        console.log('更改歌单指向')
+        let songItem = AV.Object.createWithoutData(songStorage, songId)
+        let menuItem = AV.Object.createWithoutData(menuStorage, menuId)
+        songItem.set('dependent', menuItem)
+        return songItem.save()
     }
     // 通过歌单找歌曲
     fetchSongFromMenu(songStorage, menuStorage, munuId, localStorage){
@@ -109,7 +123,7 @@ class Model{
         return songStorage.find().then((response)=>{
             this.data[localStorage] = []
             response.map((item)=>{
-                this.data[localStorage].push(Object.assign({}, {id: item.id, }, item.attributes))
+                this.data[localStorage].push(Object.assign({}, {id: item.id}, item.attributes))
             })
         })
     }
@@ -117,7 +131,7 @@ class Model{
     fetchMenuFromSong(songStorage, songId){
         let songItem = AV.Object.createWithoutData(songStorage, songId)
         return songItem.fetch({ include: ['dependent'] }).then((song)=>{
-            let menuItem = song.get('dependent')
+            return song.get('dependent').attributes.menuName
         });
     }
     // 关联查询，搜索框查询

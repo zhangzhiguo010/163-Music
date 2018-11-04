@@ -29,7 +29,7 @@ if(path === '/uptoken'){
     var config = fs.readFileSync('./qiniu_key.json')
     config = JSON.parse(config)
     var mac = new qiniu.auth.digest.Mac(config.accessKey, config.secretKey);
-    var putPolicy = new qiniu.rs.PutPolicy({scope: '163-music'});
+    var putPolicy = new qiniu.rs.PutPolicy({scope: '163-music-two'});
     var uploadToken=putPolicy.uploadToken(mac);
     response.write(`
         {

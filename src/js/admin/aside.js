@@ -1,75 +1,30 @@
 {
-    let view = new View2({
-        data: {
-            selectedTab: 'tab_songList'
-        },
-        el: '.aside-inner',
-        template: `
-            <ul>
-                <li name="catalogue">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-mulu"></use>
-                    </svg>
-                    <span>目录</span>
-                </li>
-                <li name="tab_songList" data-ele="tab">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-gequliebiao"></use>
-                    </svg>
-                    <span>歌曲列表</span> 
-                </li>
-                <li name="tab_newAndEdit" data-ele="tab">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-xinjian_bianji"></use>
-                    </svg>
-                    <span>新建歌曲</span>
-                </li>
-                <li name="tab_menuList" data-ele="tab">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-yonghuguanli"></use>
-                    </svg>
-                    <span>歌单列表</span>
-                </li>
-                <li name="tab_newMenu" data-ele="tab">
-                    <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-yonghuguanli"></use>
-                    </svg>
-                    <span>新建歌单</span>
-                </li>
-            </ul>
-        `
+    let view = new View({
+        el: '.aside-inner ul'
     })
-
-    let model = new Model2({})
     
-    let controller = new Controller2({
+    let controller = new Controller({
         view: view,
-        model: model,
         events: [
-            {ele: 'tab', type: 'click', fn: 'handleClickTab'}
-        ],
-        eventHub: [
-
+            {ele: 'tab', type: 'click', fn: 'clickTab'}
         ],
         init(){
             this.view.init()
             this.bindEvents()
-            this.bindEventHub()
         },
-        handleClickTab(target){
+        clickTab(target){
             let tabName = target.getAttribute('name')
-            this.activateLi(tabName)
+            this.activateLi(target)
             window.eventHub.trigger('selectTab', {tabName: tabName})
         },
-        activateLi(newTabName){
-            let oldTabName = this.view.data.selectedTab
-            if(oldTabName){
-                if(oldTabName !== newTabName){
-                    this.view.toggleActive(`li[name=${oldTabName}]`, 'deactive')
+        activateLi(target){
+            target.classList.add('active')
+            let children = target.parentElement.getElementsByClassName('active')
+            Array.from(children).forEach((item)=>{
+                if(item !== target){
+                    item.classList.remove('active')
                 }
-            }
-            this.view.toggleActive(`li[name=${newTabName}]`, 'active')
-            this.view.data.selectedTab = newTabName
+            })
         }
     })
 
