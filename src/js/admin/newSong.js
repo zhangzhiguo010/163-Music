@@ -142,7 +142,6 @@
                         let size = `${Math.ceil(responseData.total.size/1000)}kb`
                         let percent = `${Math.floor(responseData.total.percent)}%`
                         Object.assign(this.view.data, {loaded:loaded, size:size, percent:percent})
-                        console.log(`正在上传：${percent}`)
                         // 此处responseData数据是页面展示所用的数据，存在view的data中   
                     },
                     error: (err)=>{
@@ -152,7 +151,6 @@
                         alert('上传完成')
                         let name = responseData.key
                         let url = `http://phnd1fxw9.bkt.clouddn.com/${encodeURIComponent(responseData.key)}`
-                        console.log(url)
                         // 此处responseData数据是数据库返回的数据，存在model的data中
                         if(this.view.data.fileType === 'song'){
                             Object.assign(this.model.data, {songName: name, songUrl: url})

@@ -25,13 +25,6 @@
                     <div>操作</div>
                 </li>
             </ul>
-            <div class="selectButton-wrapper">
-                <span>ic</span>
-                <span>全选</span>
-            </div>
-            <div class="deleteButton-wrpper">
-                <span>删除</span>
-            </div>
             <div class="page-wrapper">
                 <div id="page_menuList"></div>
             </div>

@@ -28,19 +28,11 @@
                     <div>操作</div>
                 </li>
             </ul>
-            <div class="selectButton-wrapper">
-                <span>ic</span>
-                <span>全选</span>
-            </div>
-            <div class="deleteButton-wrpper">
-                <span>删除</span>
-            </div>
             <div class="page-wrapper">
                 <div id="page_songList"></div>
             </div>
         `,
         render(data){
-            // console.log('render渲染')
             let liArray = data.songs.map((item)=>{
                 let li = document.createElement('li')
                 li.innerHTML = `
@@ -81,7 +73,6 @@
                 dataSource: liArray,
                 dataSize: 10,
                 callBack(newData, maxPageNumber){
-                    // console.log('pagination函数')
                     let ul = this.o_el.querySelector('.item-wrapper')
                     this.clearUlOrOl(ul, [ul.firstElementChild])
                     newData.map((item)=>{

@@ -109,7 +109,6 @@ class Model{
     }
     // 更改歌单指向
     changeSongPointMenu(songStorage, menuStorage, songId, menuId){
-        console.log('更改歌单指向')
         let songItem = AV.Object.createWithoutData(songStorage, songId)
         let menuItem = AV.Object.createWithoutData(menuStorage, menuId)
         songItem.set('dependent', menuItem)
