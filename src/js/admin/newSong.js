@@ -123,7 +123,6 @@
         },
         listenSelectTab(obj){
             this.view.toggleShowOrHidden(obj.tabName, 'tab_newAndEdit', '.newAndEdit')
-            this.view.render(this.model.data)
             this.model.fetchAll('Playlist', 'allMenu').then(()=>{
                 this.view.render(this.model.data)
             })

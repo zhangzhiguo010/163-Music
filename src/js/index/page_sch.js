@@ -154,7 +154,7 @@
         clickSongLi(target){
             let songId = target.getAttribute('data-songId')
             this.model.data.songs.map((item)=>{
-                if(item.songId = songId){
+                if(item.songId === songId){
                     Object.assign(this.view.data.song, item)
                 }
             })

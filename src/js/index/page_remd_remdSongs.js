@@ -7,7 +7,6 @@
         `,
         render(data){
             data.menus.slice(0,6).map((item)=>{
-                console.log(item.coverUrl)
                 let ul = this.o_el.querySelector('ul')
                 let li = document.createElement('li')
                 li.innerHTML = `
@@ -56,7 +55,6 @@
         clickMenu(target){
             // 点击歌单，打开页面，歌单的id在请求中
             this.view.selectedId = target.getAttribute('data-menuId')
-            console.log(this.view.selectedId)
             window.location.href = `/src/playlist.html?menuId=${this.view.selectedId}`
         }
     })
