@@ -70,19 +70,20 @@
         },
         createLyrics(data){
             data.lyrics.split('\n').map((item)=>{
-                let line = document.createElement('p')
+                
                 // let regex = /\[([\d:.]+)\](.+)/
                 let regex = /\[(\d+:\d+.\d+)\](.+)/
                 let matches = item.match(regex)
-                if(matches && matches[0] && matches[1]){
+                if(matches && matches[1] && matches[2]){
+                    let line = document.createElement('p')
+                    console.log(matches[2])
                     let oldTime = matches[1].split(':')
                     let newTime = (oldTime[0]-0)*60 + (oldTime[1]-0)
                     line.innerText = matches[2]
                     line.setAttribute('data-time', newTime)
-                }else{
-                    line.innerText = item
+                    this.o_el.querySelector('.lyricsWrapper').appendChild(line)
                 }
-                this.o_el.querySelector('.lyricsWrapper').appendChild(line)
+                
             })
         },
         controlAudio(data){
@@ -125,18 +126,21 @@
                         }
                     }
                 }
-                // 滚动展示该歌词
-                let lyricsWrapper = this.o_el.querySelector('.lyricsWrapper')
-                let height = activeP.getBoundingClientRect().top - lyricsWrapper.getBoundingClientRect().top
-                lyricsWrapper.style.cssText = `transform: translateY(-${height-31}px)`
-                // 该歌词添加样式，其他歌词去掉样式
-                if(activeP !== this.data.activedLyric){
-                    if(this.data.activedLyric.classList){
-                        this.data.activedLyric.classList.remove('active')
+                if(activeP){
+                    // 滚动展示该歌词
+                    let lyricsWrapper = this.o_el.querySelector('.lyricsWrapper')
+                    let height = activeP.getBoundingClientRect().top - lyricsWrapper.getBoundingClientRect().top
+                    lyricsWrapper.style.cssText = `transform: translateY(-${height-31}px)`
+                    // 该歌词添加样式，其他歌词去掉样式
+                    if(activeP !== this.data.activedLyric){
+                        if(this.data.activedLyric.classList){
+                            this.data.activedLyric.classList.remove('active')
+                        }
+                        activeP.classList.add('active')
+                        this.data.activedLyric = activeP
                     }
-                    activeP.classList.add('active')
-                    this.data.activedLyric = activeP
                 }
+
             }, 100)
         }
     })

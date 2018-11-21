@@ -93,6 +93,7 @@
     singger.contains(/*歌手名*/, /*输入的关键字*/)
     AV.Query.or(songName, singger).find().then((response)=>{})
 ```
+
 2. 输出：
 ```js
 	/*view.render_createSearch 将歌曲加载到页面中搜索标签下搜索结果展示区域*/
